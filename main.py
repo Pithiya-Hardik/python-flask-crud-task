@@ -1,4 +1,6 @@
 
+from crypt import methods
+import email
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_mysqldb import MySQL
 import re
@@ -23,10 +25,10 @@ app.config['MAIL_PASSWORD'] = 'ppfrehgxhqlfoawp'
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
-@app.route('/')
+@app.route('/') 
 
 # ================================ main page ================================================
-@app.route('/login', )
+@app.route('/login')
 def login():
     if 'loggedin' in session:
         return redirect("/admindashboard")
@@ -714,6 +716,29 @@ def registeradmin():
         flash("Register successfull !")
         return redirect('adminlogin')  
     return render_template('registeradmin.html')
+
+
+
+#======================================== user password forget ============================
+@app.route('/forgetpassword')
+def forgetpassword():
+    return render_template('forgetpasswordlink.html')
+
+@app.route('/senteemailforget', methods=['GET','POST'])
+def senteemailforget():
+    if request.method == 'POST':
+        email = request.form.get('uemail')
+        sms = 'Click To Set New Password '+ 'http://127.0.0.1:5000/setpassword'
+        msg = Message('Re Set Password', sender = 'pithiyahardik95@gmail.com', recipients = [email])
+        msg.body = sms
+        mail.send(msg)
+        flash('Plase Check Your Mail')
+        return redirect('/userlogin')
+
+@app.route('/setpassword')
+def setpassword():
+    return render_template('userresetpassword.html')
+
 
 if __name__ == "__main__":
     app.run(debug=True)
