@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>admincrate</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet"
+        id="bootstrap-css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqBootstrapValidation/1.3.6/jqBootstrapValidation.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+
+    <link rel="stylesheet" href="static/style.css">
+
+</head>
+
+<body class="section">
+
+    <div class="form-box-register row">
+        <div class="col-6">
+        <h1>Register Admin</h1>
+        <form id="login" class="input-group" action="{{ url_for('registeradmin')}}" method="POST" novalidate>
+            <div class="control-group">
+                <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="Email"
+                    required="required">
+                <p class="text-danger help-block" id="velidesion"></p>
+            </div>
+
+            <div class="control-group">
+                <input type="password" id="password" name="password" class="form-control form-control-lg"
+                    data-validation-regex-regex="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+                    data-validation-regex-message="Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character:"
+                    placeholder="Enter Password" required="required">
+                    <span toggle="#password" class="bi bi-eye-slash field-icon toggle-password"></span>
+
+                <p class="text-danger help-block" id="velidesion"></p>
+            </div>
+
+            <div class="control-group">
+                <input type="password"  id="repassword" class="form-control form-control-lg" placeholder="Re Enter Password" data-validation-match-match="password" name="repassword"  >
+                <span toggle="#repassword" class="bi bi-eye-slash field-icon toggle-repassword"></span>
+
+                <p class="text-danger help-block" id="velidesion"></p>
+            </div>
+            <div class="msg" style="color: red;">{{ umsg }}</div>
+            <button type="submit" class="submit-btn">Register</button>
+            <a href="/adminlogin" class="btn btn-primary  btn-sm" id="gobackbutton">Go Back</a>
+        </form>
+    </div>
+    <div class="col-6 bgadminregister">
+
+    </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#login input').jqBootstrapValidation({
+                preventSubmit: true,
+            });
+        });
+
+        $(".toggle-password").click(function() {
+
+            $(this).toggleClass("bi-eye");
+            var input = $($(this).attr("toggle"));
+            if (input.attr("type") == "password") {
+              input.attr("type", "text");
+            } else {
+              input.attr("type", "password");
+            }
+          });
+
+          $(".toggle-repassword").click(function() {
+
+            $(this).toggleClass("bi-eye");
+            var input = $($(this).attr("toggle"));
+            if (input.attr("type") == "password") {
+              input.attr("type", "text");
+            } else {
+              input.attr("type", "password");
+            }
+          });
+
+    </script>
+
+
+</body>
+
+
+
+</html>

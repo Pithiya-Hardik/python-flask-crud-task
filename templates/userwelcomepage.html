@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/style.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet"
+        id="bootstrap-css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <title>user welcome</title>
+</head>
+
+<body class="section">
+    <div class="navbar">
+        <p>Welcome: {{msg}}</p>
+        <a href="/userlogout" class="btn btn-primary  btn-sm" id="userlist">Log Out</a>
+    </div>
+
+    <div class="form-box-userdashboard">
+        <form id="login" class="user-input-group row">
+            <div class="col-6">
+                <h1>User Dashboard</h1>
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                {% for message in messages %}
+                <p id="loginsuccess">{{ message }}</p>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+                <a href="/checkuserprofile" type="submit" name="fill_information" value="fillinformation"
+                    class="user-submit-btn">Fill Your Information</a>
+                <a href="/showuserdata" type="submit" name="show_profile" value="showprofile"
+                    class="user-submit-btn">Show
+                    Profile And Edit</a>
+                <div class="mt-5" style="color: red;">{{alartmsg}}</div>
+                <div class="mt-5" style="color: red;">{{alertcrate}}</div>
+
+                <!-- <button type="submit" name="re_setpass" value="resetpass" class="user-submit-btn">Re Set Your Password</button> -->
+            </div>
+            <div class="col-6  bguserdashboard">
+
+            </div>
+        </form>
+    </div>
+
+
+</body>
+
+</html>

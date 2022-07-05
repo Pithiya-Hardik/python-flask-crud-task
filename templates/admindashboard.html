@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet"
+        id="bootstrap-css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+
+<body class="section">
+
+    <div class="form-box-admindashboard row">
+        <div class="col-5">
+            <h1>Admin Dashboard</h1>
+            <p id="adminwelcome">Welcome: {{msg}}</p>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <p id="logoutsuccess">{{ message }}</p>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <form id="login" class="input-group" action="{{ url_for('admindashboard')}}" method="POST">
+                <!-- <button type="submit" name="admin_button" value="usercreate" class="submit-btn">Create New User</button> -->
+                <button type="submit" name="admin_button" value="userlist" class="submit-btn">User List</button>
+                <a href="/adminlist" class="btn   btn-sm" id="gobackbutton">Admin List</a>
+                <a href="/adminlogout" class="btn btn-primary  btn-sm" id="gobackbutton">Log Out</a>
+            </form>
+        </div>
+        <div class="col-7 bgadmindashboard">
+
+        </div>
+    </div>
+
+</body>
+
+</html>

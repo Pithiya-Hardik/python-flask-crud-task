@@ -1,0 +1,478 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: serif, cursive;
+}
+/* ======================== main login page ======================= */
+#mainbutton
+{
+    height: auto;
+    width: 100%;
+    margin: 30px;
+    background: linear-gradient(to right, #11072e, #1d08d8);
+    color: #fff;
+}
+
+#gobackbutton
+{
+    width: 85%;
+    padding: 10px 30px;
+    cursor: pointer;
+    display: block;
+    margin: auto;
+    background: linear-gradient(to right, #11072e, #1d08d8);
+    border: 0;
+    outline: none;
+    border-radius: 30px;
+    margin-top: 20px;
+    color: #fff;
+}
+
+.section
+{
+    background-image: url(/static/images/bg-choose.png);
+    height: 100%;
+    width: 100%;
+    background-repeat: 1;
+}
+
+h1
+{
+    text-align: center;
+    color: rgb(12, 2, 36);
+    font-family: 'Cookie', cursive;
+}
+/* =========================== adminlogin form start ============================= */
+#h2admin
+{
+    font-size: 45px;
+    text-align: center;
+    color: rgb(12, 2, 36);
+    font-family:'Times New Roman', Times, serif;
+     
+}
+ 
+#adminwelcome
+{
+    font-size: 20px;
+    color: green;
+    text-align: center;
+}
+.form-box {
+    width: 360px;
+    height: 450px;
+    position: relative;
+    margin: 6% auto;
+    background-color: #fff;
+    padding: 5px;
+    overflow: hidden;
+    background-color: #c5b7ebd8;
+}
+.form-box-home {
+    
+    width: 900px;
+    height: 450px;
+    position: relative;
+    margin: 6% auto;
+    background-color: #fff;
+    padding: 5px;
+    overflow: hidden;
+    background-color: #c5b7ebd8;
+}
+.form-box-register {
+    
+    width: 900px;
+    height: 450px;
+    position: relative;
+    margin: 6% auto;
+    background-color: #fff;
+    padding: 5px;
+    overflow: hidden;
+    background-color: #c5b7ebd8;
+}
+.form-box-admindashboard
+{
+    width: 900px;
+    height: 500px;
+    position: relative;
+    margin: 6% auto;
+    background-color: #fff;
+    padding: 5px;
+    overflow: hidden;
+    background-color: #c5b7ebd8;
+}
+.form-box-admin {
+    width: 800px;
+    height: 450px;
+    position: relative;
+    margin: 6% auto;
+    background-color: #fff;
+    padding: 5px;
+    overflow: hidden;
+    background-color: #c5b7ebd8;
+}
+
+
+.input-group {
+    top: 100px;
+    position: absolute;
+    width: 280px;
+    transition: .5s;
+}
+.input-field
+{
+    width: 100%;
+    margin: 5px 0;
+    padding: 10px 0;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 1px solid #999;
+    outline: none;
+    background: transparent;
+}
+.submit-btn
+{
+    width: 85%;
+    padding: 10px 30px;
+    cursor: pointer;
+    display: block;
+    margin: auto;
+    background: linear-gradient(to right, #11072e, #1d08d8);
+    border: 0;
+    outline: none;
+    border-radius: 30px;
+    margin-top: 50px;
+    color: #fff;
+}
+.check-box
+
+samp
+{
+    color: rgb(235, 241, 245);
+    font-size: 12px;
+    bottom: 87px;
+    position: absolute;
+}
+#login
+{
+    left: 30px;
+}
+
+.bgadminlogin
+{
+    background-image: url(/static/images/we-are-hiring.png);
+    height: 100%;
+    width: 100%;
+    background-repeat: no-repeat;
+    margin-top: 20px;
+}
+
+.bgadmindashboard
+{
+    background-image: url(/static/images/service-now-top-image.png);
+    height: 100%;
+    width: 100%;
+    background-repeat: no-repeat;
+    margin-top: 20px;
+}
+@media screen and (max-width:375px) {
+    .bgadminlogin
+    {
+        background-image: none;
+        height: 100%;
+        width: 100%;
+        background-repeat: no-repeat;
+        margin-top: 20px;
+    }
+    .bgadmindashboard
+    {
+        background-image: none;
+        height: 100%;
+        width: 100%;
+        background-repeat: no-repeat;
+        margin-top: 20px;
+    }
+    .form-box-admin {
+        width: 375px;
+        height: 450px;
+        position: relative;
+        margin: 6% auto;
+        background-color: #fff;
+        padding: 5px;
+        overflow: hidden;
+        background-color: #c5b7ebd8;
+    }
+    .form-box-admindashboard
+    {
+        width: 370px;
+        height: 500px;
+        position: relative;
+        margin: 6% auto;
+        background-color: #fff;
+        padding: 5px;
+        overflow: hidden;
+        background-color: #c5b7ebd8;
+    }
+}
+/* =========================== adminlogin from end ============================= */
+/* ======================== user login from ============================= */
+
+.form-box-user {
+    width: 800px;
+    height: 450px;
+    position: relative;
+    margin: 6% auto;
+    background-color: #fff;
+    padding: 5px;
+    overflow: hidden;
+    background-color: #c5b7ebd8;
+}
+.form-box-userdashboard {
+    width: 600px;
+    /* height: 450px; */
+    position: relative;
+    margin: 6% auto;
+    background-color: #fff;
+    padding: 5px;
+    overflow: hidden;
+    background-color: #c5b7ebd8;
+}
+.bguserlogin
+{
+    background-image: url(/static/images/systemetic-process.png);
+    height: 100%;
+    width: 100%;
+    background-repeat: no-repeat;
+    margin-top: 20px;
+}
+@media screen and (max-width:375px) {
+    .bguserlogin
+    {
+        background-image: none;
+        height: 100%;
+        width: 100%;
+        background-repeat: no-repeat;
+        margin-top: 20px;
+    }
+    .form-box-user {
+        width: 370px;
+        height: 450px;
+        position: relative;
+        margin: 6% auto;
+        background-color: #fff;
+        padding: 5px;
+        overflow: hidden;
+        background-color: #c5b7ebd8;
+    }
+}
+/* ================== table user show ======================= */
+.usertable
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.styled-table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.styled-table thead tr {
+    background-color: #240538;
+    color: #ffffff;
+    text-align: left;
+}
+.styled-table th
+{
+    text-align: center;
+}
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+}
+#button
+{
+    text-align: center;
+}
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+/* ================================= edit list user ======================= */
+.row
+{
+    margin: auto;
+    margin-top: 50px;
+}
+
+#userlist
+{
+    margin-right: 50px;
+    background: linear-gradient(to right, #11072e, #1d08d8);
+    color: #fff;
+}
+.navbar
+{
+    background-color: #240538;
+}
+p
+{
+    margin-left: auto;
+    margin-right: auto;
+    color: #fff;
+    font-size: 40px;
+}
+
+
+
+.user-submit-btn
+{
+    
+    padding: 10px 30px;
+    cursor: pointer;
+    margin: auto;
+    background: linear-gradient(to right, #11072e, #1d08d8);
+    border: 0;
+    outline: none;
+    border-radius: 30px;
+    margin-top: 50px;
+    color: #fff;
+    
+}
+
+.user-input-group
+{
+   margin-left: 60px;
+    transition: .5s;
+
+}
+
+
+#loginsuccess
+{
+    color: green;
+    font-size: 20px;
+    text-align: center;
+}
+#logoutsuccess
+{
+    color: green;
+    font-size: 20px;
+    text-align: center;
+}
+
+#velidesion
+{
+    font-size: 14px;
+}
+
+.userlist
+{
+    background-color: #c5b7ebd8;
+}
+
+
+
+.homeimg2
+{
+    background-image: url(/static/images/react-top-image-v.png);
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
+}
+@media screen and (max-width:375px) {
+    .form-box-home {
+    
+        width: 100%;
+        height: 450px;
+        position: fixed;
+        margin: 6% auto;
+        background-color: #fff;
+        padding: 5px;
+        overflow: hidden;
+        background-color: #c5b7ebd8;
+    }
+
+    .homeimg2
+    {
+        background-image: none;
+        /* height: 100%; */
+        /* width: 100%; */
+    }
+    
+}
+
+.bgadminregister
+{
+    background-image: url(/static/images/serviceNow_img4.png);
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
+}
+
+@media screen and (max-width:375px) {
+    .bgadminregister
+    {
+        background-image: none;
+        background-repeat: no-repeat;
+        height: 100%;
+        width: 100%;
+    }
+    .form-box-register {
+    
+        width: 370px;
+        height: 450px;
+        position: relative;
+        margin: 6% auto;
+        background-color: #fff;
+        padding: 5px;
+        overflow: hidden;
+        background-color: #c5b7ebd8;
+    }
+    
+}
+
+.bguserdashboard
+{
+    background-image: url(/static/images/servicenow1\ .png);
+    background-repeat: no-repeat;
+    
+}
+@media screen and (max-width:375px) {
+    .bguserdashboard
+    {
+        background-image: none;
+        background-repeat: no-repeat;
+    
+    }
+    .form-box-userdashboard {
+        width: 370px;
+        /* height: 450px; */
+        position: relative;
+        margin: 6% auto;
+        background-color: #fff;
+        padding: 5px;
+        overflow: hidden;
+        background-color: #c5b7ebd8;
+    }
+}
+
+.field-icon {
+    float: right;
+    margin-left: -20px;
+    margin-top: -35px;
+    position: relative;
+    z-index: 2;
+    color: #11072e;
+    font-size: 20px;
+  }
