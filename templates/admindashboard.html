@@ -15,7 +15,7 @@
 <body class="section">
 
     <div class="form-box-admindashboard row">
-        <div class="col-5">
+        <div class="col-md-5">
             <h1>Admin Dashboard</h1>
             <p id="adminwelcome">Welcome: {{msg}}</p>
             {% with messages = get_flashed_messages() %}
@@ -27,13 +27,13 @@
             {% endwith %}
 
             <form id="login" class="input-group" action="{{ url_for('admindashboard')}}" method="POST">
-                <!-- <button type="submit" name="admin_button" value="usercreate" class="submit-btn">Create New User</button> -->
+                
                 <button type="submit" name="admin_button" value="userlist" class="submit-btn">User List</button>
                 <a href="/adminlist" class="btn   btn-sm" id="gobackbutton">Admin List</a>
                 <a href="/adminlogout" class="btn btn-primary  btn-sm" id="gobackbutton">Log Out</a>
             </form>
         </div>
-        <div class="col-7 bgadmindashboard">
+        <div class="col-md-7 bgadmindashboard">
 
         </div>
     </div>

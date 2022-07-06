@@ -21,9 +21,20 @@
                 <form action="/insertuserdata" id="login" method="POST" novalidate="novalidate">
                    
                     <div class="control-group">
+                        <label>Email</label>
+                        <input type="text" name="firstname" value="{{email}}" class="form-control" readonly>
+                        
+                    </div>
+                    <div class="control-group">
+                        <label>User Name</label>
+                        <input type="text" name="firstname" value="{{name}}" class="form-control" readonly>
+                        
+                    </div>
+
+                    <div class="control-group">
                         <label>First Name</label>
                         <input type="text" name="firstname"  class="form-control" minlength="3" maxlength="20"
-                        data-validation-regex-regex="[a-zA-Z ]+" data-validation-regex-message="only characters"
+                        data-validation-regex-regex="[A-Z]+[a-zA-Z ]+" data-validation-regex-message=" first latter Capital & only characters"
                         required="required">
                         <div class="msg" style="color: red;">{{ msg }}</div>
                         <p class="text-danger help-block" id="velidesion"></p>
@@ -32,7 +43,7 @@
                     <div class="control-group">
                         <label>Last Name</label>
                         <input type="text" name="lastname"  class="form-control" minlength="3" maxlength="20"
-                        data-validation-regex-regex="[a-zA-Z ]+" data-validation-regex-message="only characters"
+                        data-validation-regex-regex="[A-Z]+[a-zA-Z ]+" data-validation-regex-message="first latter Capital & only characters"
                         required="required">
                         <div class="msg" style="color: red;">{{ lmsg }}</div>
                         <p class="text-danger help-block" id="velidesion"></p>
@@ -56,14 +67,12 @@
                     </div>
 
                     <div class=" control-group form-group">
-                        <label>Gender</label>
-                        <input list="gender" name="gender"  class="form-control dropdown-content" required="required">
-                        <datalist id="gender">
-                            <option value="Male">
-                            <option value="Female">
-                          </datalist>  
-                        <div class="msg" style="color: red;">{{ gmsg }}</div>
-                        <p class="text-danger help-block" id="velidesion"></p>                          
+                        <label>Choose a Gender</label>
+                        <select name="gender" id="gender" class="form-control">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                                                
                     </div>
 
                     <div class=" control-group form-group">
@@ -83,12 +92,20 @@
                     </div>
 
                     <div class="control-group form-group">
-                        <label>State</label>
-                        <input type="text" name="state"  class="form-control" minlength="3" maxlength="20"
-                        data-validation-regex-regex="[a-zA-Z ]+" data-validation-regex-message="only characters"
-                        required="required">
-                        <div class="msg" style="color: red;">{{ smsg }}</div>
-                        <p class="text-danger help-block" id="velidesion"></p>
+                        <label>Choose a State</label>
+                        <select name="state" id="state" class="form-control">
+                            <option value="Gujarat">Gujarat</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Goa">Goa</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                            <option value="Delhi">Delhi</option>
+                            <option value="Meghalaya">Meghalaya</option>
+                            <option value="Odisha">Odisha</option>
+                            <option value="Uttarakhand">Uttarakhand</option>
+                            <option value="Rajasthan">Rajasthan</option>
+                        </select>
+                        
                     </div>
                     
                     <div class="control-group">

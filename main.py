@@ -5,6 +5,8 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_mysqldb import MySQL
 import re
 from flask_mail import Mail, Message
+import datetime
+from datetime import timedelta
 
 
 app = Flask(__name__)
@@ -16,7 +18,7 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'Sanskar'
 app.config['MYSQL_DB'] = 'system'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-mysql = MySQL(app)
+
 
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
@@ -24,6 +26,10 @@ app.config['MAIL_USERNAME'] = 'pithiyahardik95@gmail.com'
 app.config['MAIL_PASSWORD'] = 'ppfrehgxhqlfoawp'
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
+app.permanent_session_lifetime = timedelta(minutes=10000000)
+
+
+mysql = MySQL(app)
 mail = Mail(app)
 @app.route('/') 
 
@@ -91,9 +97,6 @@ def createuserinuserlist():
 # ======================================== admin dashboard ===================================
 @app.route('/admindashboard', methods = ['GET', 'POST'])
 def admindashboard():
-
-   
-
     if 'loggedin' in session:
         msg = session['email']
         
@@ -401,7 +404,9 @@ def userlogin():
          if userdata:
             session['userloggedin'] = True
             session['userid'] = userdata['Id']
-            session['username'] = userdata['user_name']  
+            session['username'] = userdata['user_name'] 
+            session['useremail'] = userdata['email']
+             
             flash('You are successfully logged in')        
             return redirect(url_for('userdashboard'))
          else:
@@ -416,6 +421,7 @@ def userlogout():
     session.pop('userloggedin', None)
     session.pop('userid', None)
     session.pop('username', None)
+    session.pop('useremail', None)
     flash("your successfull logout:")
     return redirect(url_for('userlogin'))
 
@@ -424,20 +430,26 @@ def userlogout():
 @app.route('/userdashboard', methods=['GET','POST'])
 def userdashboard():
     if 'userloggedin' in session:
+        userid = session['userid']
         msg = session['username'] 
-        return render_template('userwelcomepage.html',msg = msg)
+        msgemail = session['useremail']
+        cur = mysql.connection.cursor()
+        cur.execute('SELECT * FROM User_profile WHERE user_id = %s', [userid])
+        data = cur.fetchone()
+        cur.close()
+        return render_template('userwelcomepage.html',msg = msg,userprofile=data,msge=msgemail)
     else:
         return redirect('userlogin')
 
-
+# ================= check profile ==========================
 @app.route('/checkuserprofile', methods=['GET','POST'])
 def checkuserprofile():
     cur = mysql.connection.cursor()
     userid = session['userid']
     cur = mysql.connection.cursor()
     if cur.execute('SELECT * FROM User_profile WHERE user_id = %s', [userid]) ==1:
-        msg = 'you are allread create your profile so you can show  profile and edit your data'
-        return render_template('userwelcomepage.html', alartmsg=msg)
+        flash('you are allread create your profile so you can edit your data')
+        return redirect('/userdashboard')
     else:
         return redirect('/insertuserdata')
     
@@ -445,6 +457,8 @@ def checkuserprofile():
 @app.route('/insertuserdata', methods=['GET','POST'])
 def insertuserdata():
     uid=session['userid']
+    msgu = session['username'] 
+    msgemail = session['useremail']
     if request.method == 'POST':
         fname = request.form.get('firstname')
         lname = request.form.get('lastname')
@@ -517,6 +531,7 @@ def insertuserdata():
             return render_template('userfilldata.html', zmsg=msg)
 
         else:
+        
             cur = mysql.connection.cursor()
             cur.execute("INSERT INTO User_profile (user_id,first_name, last_name, date_of_birth,mobile_number,gender,address,city,state,zipcode,profile_updated_dt) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,curdate())",
             (uid,fname,lname,dob,mno,gender,address,city,state,zipcode))
@@ -524,7 +539,7 @@ def insertuserdata():
             cur.close() 
             flash("you have successfull create your profile")
             return redirect('/userdashboard')
-    return render_template('userfilldata.html')
+    return render_template('userfilldata.html',name=msgu,email=msgemail)
 
 # ======================================= user profile update ================================
 @app.route('/updateuserprofiledata', methods=['GET','POST'])
@@ -630,8 +645,12 @@ def show():
         cur.close()
         return render_template('userprofile.html', userprofile=data)
     else:
-        msg = "first of all you can fill your data"
-        return render_template('userwelcomepage.html', alertcrate=msg)
+       
+        flash("first of all you can fill your data")
+        return redirect('/userdashboard')
+
+
+       
 
 
 

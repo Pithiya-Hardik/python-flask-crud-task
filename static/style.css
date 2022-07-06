@@ -41,8 +41,9 @@ h1
 {
     text-align: center;
     color: rgb(12, 2, 36);
-    font-family: 'Cookie', cursive;
+    font-family: 'Times New Roman', Times, serif;
 }
+
 /* =========================== adminlogin form start ============================= */
 #h2admin
 {
@@ -59,6 +60,7 @@ h1
     color: green;
     text-align: center;
 }
+
 .form-box {
     width: 360px;
     height: 450px;
@@ -69,6 +71,20 @@ h1
     overflow: hidden;
     background-color: #c5b7ebd8;
 }
+@media screen and (max-width:820px) {
+    .form-box {
+        width: 360px;
+        height: 450px;
+        position: relative;
+        margin: 20% auto;
+        background-color: #fff;
+        padding: 5px;
+        overflow: hidden;
+        background-color: #c5b7ebd8;
+    }
+}
+
+/* =========================== home page form =============================== */
 .form-box-home {
     
     width: 900px;
@@ -80,6 +96,8 @@ h1
     overflow: hidden;
     background-color: #c5b7ebd8;
 }
+
+/* =========================== register admin form =============================== */
 .form-box-register {
     
     width: 900px;
@@ -91,6 +109,8 @@ h1
     overflow: hidden;
     background-color: #c5b7ebd8;
 }
+
+/* =========================== admin dashboard page form =============================== */
 .form-box-admindashboard
 {
     width: 900px;
@@ -102,6 +122,8 @@ h1
     overflow: hidden;
     background-color: #c5b7ebd8;
 }
+
+/* =========================== admin login page form =============================== */
 .form-box-admin {
     width: 800px;
     height: 450px;
@@ -120,6 +142,7 @@ h1
     width: 280px;
     transition: .5s;
 }
+
 .input-field
 {
     width: 100%;
@@ -176,6 +199,28 @@ samp
     width: 100%;
     background-repeat: no-repeat;
     margin-top: 20px;
+}
+@media screen and (max-width:820px) {
+    .form-box-admindashboard
+    {
+        width: 800px;
+        height: 500px;
+        position: relative;
+        margin: 6% auto;
+        background-color: #fff;
+        padding: 5px;
+        overflow: hidden;
+        background-color: #c5b7ebd8;
+    }
+
+    .bgadmindashboard
+    {
+        background-image: url(/static/images/service-now-top-image1.png);
+        height: 100%;
+        width: 100%;
+        background-repeat: no-repeat;
+        margin-top: 50px;
+    }
 }
 @media screen and (max-width:375px) {
     .bgadminlogin
@@ -278,7 +323,7 @@ samp
     border-collapse: collapse;
     margin: 25px 0;
     font-size: 0.9em;
-    font-family: sans-serif;
+    font-family: sans-serif; 
     min-width: 400px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
@@ -349,6 +394,18 @@ p
     color: #fff;
     
 }
+.user-btn
+{
+    padding: 10px 30px;
+    cursor: pointer;
+    margin: auto;
+    background: linear-gradient(to right, #ee5a6f, #f29263);
+    border: 0;
+    outline: none;
+    border-radius: 30px;
+    margin-top: 50px;
+    color: #fff;
+}
 
 .user-input-group
 {
@@ -387,8 +444,32 @@ p
 {
     background-image: url(/static/images/react-top-image-v.png);
     background-repeat: no-repeat;
+    margin-top: 20px;
     height: 100%;
     width: 100%;
+}
+@media screen and (max-width:820px) {
+    .form-box-home {
+    
+        width: 850px;
+        height: 450px;
+        position: fixed;
+        margin: 6% auto;
+        background-color: #fff;
+        padding: 5px;
+        overflow: hidden;
+        background-color: #c5b7ebd8;
+    }
+    .homeimg2
+    {
+        background-image: url(/static/images/react-top-image-v1.png);
+        background-repeat: no-repeat;
+        height: auto;
+        width: auto;
+        margin-top: 50px;
+        
+    }
+   
 }
 @media screen and (max-width:375px) {
     .form-box-home {
@@ -406,8 +487,6 @@ p
     .homeimg2
     {
         background-image: none;
-        /* height: 100%; */
-        /* width: 100%; */
     }
     
 }
@@ -476,3 +555,135 @@ p
     color: #11072e;
     font-size: 20px;
   }
+
+
+  /* ================================== user profile show =========================== */
+
+
+
+
+.user-card-full {
+    overflow: hidden;
+}
+
+.card {
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 20px 0 rgba(69,90,100,0.08);
+    box-shadow: 0 1px 20px 0 rgba(69,90,100,0.08);
+    border: none;
+    margin-bottom: 30px;
+}
+
+.m-r-0 {
+    margin-right: 0px;
+}
+
+.m-l-0 {
+    margin-left: 0px;
+}
+
+.user-card-full .user-profile {
+    border-radius: 5px 0 0 5px;
+}
+
+.bg-c-lite-green {
+    background: linear-gradient(to right, #11072e, #1d08d8);
+}
+
+.user-profile {
+    padding: 20px 0;
+}
+
+.card-block {
+    padding: 1.25rem;
+}
+
+.m-b-25 {
+    margin-bottom: 25px;
+}
+
+.img-radius {
+    border-radius: 5px;
+}
+
+
+ 
+h6 {
+    font-size: 14px;
+}
+
+.card .card-block p {
+    line-height: 25px;
+}
+
+@media only screen and (min-width: 1400px){
+p {
+    font-size: 14px;
+}
+}
+
+.card-block {
+    padding: 1.25rem;
+}
+
+.b-b-default {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.m-b-20 {
+    margin-bottom: 20px;
+}
+
+.p-b-5 {
+    padding-bottom: 5px !important;
+}
+
+.card .card-block p {
+    line-height: 25px;
+}
+
+.m-b-10 {
+    margin-bottom: 10px;
+}
+
+.text-muted {
+    color: #919aa3 !important;
+}
+
+.b-b-default {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.f-w-600 {
+    font-weight: 600;
+}
+
+.m-b-20 {
+    margin-bottom: 20px;
+}
+
+.m-t-40 {
+    margin-top: 20px;
+}
+
+.p-b-5 {
+    padding-bottom: 5px !important;
+}
+
+.m-b-10 {
+    margin-bottom: 10px;
+}
+
+.m-t-40 {
+    margin-top: 20px;
+}
+
+.user-card-full .social-link li {
+    display: inline-block;
+}
+
+
+
+
+
+

@@ -5,11 +5,16 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="static/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href=" https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+    <link rel="stylesheet"
+        href="    https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/3.6.95/css/materialdesignicons.css">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet"
         id="bootstrap-css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <title>user welcome</title>
+    <link rel="stylesheet" href="static/style.css">
+    <title>Profile</title>
 </head>
 
 <body class="section">
@@ -17,36 +22,123 @@
         <p>Welcome: {{msg}}</p>
         <a href="/userlogout" class="btn btn-primary  btn-sm" id="userlist">Log Out</a>
     </div>
+    <div class="page-content page-container" id="page-content">
+        <div class="padding">
+            <div class="row container d-flex justify-content-center">
 
-    <div class="form-box-userdashboard">
-        <form id="login" class="user-input-group row">
-            <div class="col-6">
-                <h1>User Dashboard</h1>
-                {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                {% for message in messages %}
-                <p id="loginsuccess">{{ message }}</p>
-                {% endfor %}
-                {% endif %}
-                {% endwith %}
+                <div class="card user-card-full">
+                    <div class="row m-l-0 m-r-0">
+                        <div class="col-sm-4 bg-c-lite-green user-profile">
+                            <div class="card-block text-center text-white">
+                                <div class="m-b-25">
+                                    <img src="https://img.icons8.com/bubbles/100/000000/user.png" class="img-radius"
+                                        alt="User-Profile-Image">
+                                </div>
+                                <h2 class="f-w-600">{{msg}}</h2>
+                                <h2 class="f-w-600">{{msge}}</h2>
 
-                <a href="/checkuserprofile" type="submit" name="fill_information" value="fillinformation"
-                    class="user-submit-btn">Fill Your Information</a>
-                <a href="/showuserdata" type="submit" name="show_profile" value="showprofile"
-                    class="user-submit-btn">Show
-                    Profile And Edit</a>
-                <div class="mt-5" style="color: red;">{{alartmsg}}</div>
-                <div class="mt-5" style="color: red;">{{alertcrate}}</div>
+                            </div>
+                            <div>
+                                <a href="/checkuserprofile" type="submit" name="fill_information"
+                                    value="fillinformation" class="user-btn">Create Profile</a>
+                            </div>
+                            <div>
+                                <a href="/showuserdata" type="submit" name="show_profile" value="showprofile"
+                                    class="user-btn"> Profile Edit</a>
+                            </div>
+                            <div>
+                                {% with messages = get_flashed_messages() %}
+                                {% if messages %}
+                                {% for message in messages %}
+                                <p id="loginsuccess">{{ message }}</p>
+                                {% endfor %}
+                                {% endif %}
+                                {% endwith %}
+                            </div>
+                            <div class="mt-5" style="color: red;">{{alartmsg}}</div>
+                            <div class="mt-5" style="color: red;">{{alertcrate}}</div>
+                        </div>
 
-                
+                        <div class="col-sm-8">
+                            <div class="card-block">
+                                <h6 class="m-b-20 p-b-5 b-b-default f-w-600"> User Information</h6>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label>First Name</label>
+                                        <input type="text" value="{{userprofile.first_name}}">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label>Last Name</label>
+                                        <input type="text" value="{{userprofile.last_name}}">
+                                    </div>
+                                </div>
+
+                                <div class="row pt-3">
+                                    <div class="col-sm-6 ">
+                                        <div>
+                                            <label>Date Of Birth</label>
+                                        </div>
+                                        <input type="date" value="{{userprofile.date_of_birth}}">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div>
+                                            <label>Mobile Number</label>
+                                        </div>
+                                        <input type="text" value="{{userprofile.mobile_number}}">
+                                    </div>
+                                </div>
+                                <div class="row pt-3">
+                                    <div class="col-sm-6 ">
+                                        <div>
+                                            <label>Gender</label>
+                                        </div>
+                                        <input type="text" value="{{userprofile.gender}}">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div>
+                                            <label>Address</label>
+                                        </div>
+                                        <input type="text" value="{{userprofile.address}}">
+                                    </div>
+                                </div>
+                                <div class="row pt-3">
+                                    <div class="col-sm-6 ">
+                                        <div>
+                                            <label>City</label>
+                                        </div>
+                                        <input type="text" value="{{userprofile.city}}">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div>
+                                            <label>State</label>
+                                        </div>
+                                        <input type="text" value="{{userprofile.state}}">
+                                    </div>
+                                </div>
+                                <div class="row pt-3">
+                                    <div class="col-sm-6 ">
+                                        <div>
+                                            <label>Zip Code</label>
+                                        </div>
+                                        <input type="text" value="{{userprofile.zipcode}}">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div>
+                                            <label>Profile Update date</label>
+                                        </div>
+                                        <input type="date" value="{{userprofile.profile_updated_dt}}" readonly>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-            <div class="col-6  bguserdashboard">
-
-            </div>
-        </form>
+        </div>
     </div>
-
-
 </body>
 
 </html>
