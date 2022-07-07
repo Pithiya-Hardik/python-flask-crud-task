@@ -18,24 +18,13 @@
     <div class="row">
         <div class="col-md-4 offset-md-4">
             <div class="card card-body">
-                <form  action="/updateuserprofiledata" id="login" method="POST" novalidate="novalidate">
-                    
-                    <div class="control-group">
-                        <label>Email</label>
-                        <input type="text" name="firstname" value="{{email}}" class="form-control" readonly>
-                        
-                    </div>
-                    <div class="control-group">
-                        <label>User Name</label>
-                        <input type="text" name="firstname" value="{{name}}" class="form-control" readonly>
-                        
-                    </div>
-                    
+                <form action="/adminupdateuserprofil/{{adminshowprofile.user_id}}" id="login" method="POST" novalidate="novalidate">
+                   
                     <div class="control-group">
                         <label>First Name</label>
-                        <input type="text" name="firstname"  class="form-control" value="{{userprofile.first_name}}"
+                        <input type="text" name="firstname"  class="form-control" value="{{adminshowprofile.first_name}}"
                         minlength="3" maxlength="20"
-                        data-validation-regex-regex="[A-Z]+[a-zA-Z ]+" data-validation-regex-message="first latter Capital & only characters"
+                        data-validation-regex-regex="[A-Z]+[a-zA-Z ]+" data-validation-regex-message="irst latter Capital & only characters"
                         required="required">
                         <div class="msg" style="color: red;">{{ msg }}</div>
                         <p class="text-danger help-block" id="velidesion"></p>
@@ -43,9 +32,9 @@
 
                     <div class="control-group">
                         <label>Last Name</label>
-                        <input type="text" name="lastname"  class="form-control" value="{{userprofile.last_name}}"
+                        <input type="text" name="lastname"  class="form-control" value="{{adminshowprofile.last_name}}"
                         minlength="3" maxlength="20"
-                        data-validation-regex-regex="[A-Z]+[a-zA-Z ]+" data-validation-regex-message="first latter Capital & only characters"
+                        data-validation-regex-regex="[A-Z]+[a-zA-Z ]+" data-validation-regex-message="irst latter Capital & only characters"
                         required="required">
                         <div class="msg" style="color: red;">{{ lmsg }}</div>
                         <p class="text-danger help-block" id="velidesion"></p>
@@ -54,14 +43,14 @@
                    
                     <div class=" control-group form-group">
                         <label>Date Of Birth</label>
-                        <input type="date" name="dob"  class="form-control" value="{{userprofile.date_of_birth}}" required="required" min="1985-01-01" max="2005-01-01" >
+                        <input type="date" name="dob"  class="form-control" value="{{adminshowprofile.date_of_birth}}" required="required" min="1985-01-01" max="2005-01-01">
                         <div class="msg" style="color: red;">{{ dmsg }}</div>
                         <p class="text-danger help-block" id="velidesion"></p>
                     </div>
 
                     <div class="control-group">
                         <label>Mobile Number</label>
-                        <input type="text" name="mno"  class="form-control"  value="{{userprofile.mobile_number}}"
+                        <input type="text" name="mno"  class="form-control"  value="{{adminshowprofile.mobile_number}}"
                         data-validation-regex-regex="[0-9]{10}" data-validation-regex-message="only 10 digits" 
                         maxlength="10" required="required">
                         <div class="msg" style="color: red;">{{ nmsg }}</div>
@@ -71,15 +60,16 @@
                     <div class=" control-group form-group">
                         <label>Choose a Gender</label>
                         <select name="gender" id="gender" class="form-control" >
-                            <option value="{{userprofile.gender}}">{{userprofile.gender}}</option>
+                            <option value="{{adminshowprofile.gender}}">{{adminshowprofile.gender}}</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                         </select>
-                       
+                        
+                    </div>
 
                     <div class=" control-group form-group">
                         <label>Address</label>
-                        <input type="text" name="address"  class="form-control" value="{{userprofile.address}}" 
+                        <input type="text" name="address"  class="form-control" value="{{adminshowprofile.address}}" 
                         minlength="3" maxlength="50" required="required">
                         <div class="msg" style="color: red;">{{ amsg }}</div>
                         <p class="text-danger help-block" id="velidesion"></p>  
@@ -87,7 +77,7 @@
 
                     <div class="control-group form-group">
                         <label>City</label>
-                        <input type="text" name="city"  class="form-control" value="{{userprofile.city}}"
+                        <input type="text" name="city"  class="form-control" value="{{adminshowprofile.city}}"
                         minlength="3" maxlength="20"
                         data-validation-regex-regex="[a-zA-Z ]+" data-validation-regex-message="only characters"
                         required="required">
@@ -97,8 +87,8 @@
 
                     <div class="control-group form-group">
                         <label>Choose a State</label>
-                        <select name="state" id="state" class="form-control" >
-                            <option value="{{userprofile.state}}">{{userprofile.state}}</option>
+                        <select name="state" id="state" class="form-control"  >
+                            <option value="{{adminshowprofile.state}}">{{adminshowprofile.state}}</option>
                             <option value="Gujarat">Gujarat</option>
                             <option value="Maharashtra">Maharashtra</option>
                             <option value="Goa">Goa</option>
@@ -110,26 +100,29 @@
                             <option value="Uttarakhand">Uttarakhand</option>
                             <option value="Rajasthan">Rajasthan</option>
                         </select>
-                        
+                       
                     </div>
                     
                     <div class="control-group">
                         <label>Zip Code</label>
-                        <input type="text" name="zipcode"  class="form-control"  value="{{userprofile.zipcode}}"
+                        <input type="text" name="zipcode"  class="form-control"  value="{{adminshowprofile.zipcode}}"
                         data-validation-regex-regex="[0-9]{6}" data-validation-regex-message="only 6 digits" 
                         maxlength="6" required="required">
                         <div class="msg" style="color: red;">{{ zmsg }}</div>
                         <p class="text-danger help-block" id="velidesion"></p>
                     </div>
                     
-                    
+                    <div class="form-group">
+                        <label>Profile Updated Date</label>
+                        <input type="date" name="pudob"   value="{{adminshowprofile.profile_updated_dt}}" class="form-control" readonly>
+                    </div>
                    
-                    <div class="form-footer">
+                    <div class="form-footer"> 
                        
-                        <button type="submit" class="btn btn-primary btn-block" id="gobackbutton">Edit</button>
-                        <a href="/userdashboard" class="btn btn-primary  btn-sm" id="gobackbutton">Go Back</a>
+                        <button type="submit" class="btn btn-primary btn-block" id="gobackbutton">Submit</button>
+                        <a href="/adminshowuserdata/{{adminshowprofile.user_id}}" class="btn btn-primary  btn-sm" id="gobackbutton">Go Back</a>
 
-                    </div> 
+                    </div>
 
                 </form>
             </div>
@@ -143,4 +136,4 @@
         });
     </script>
 </body>
-</html>
+</html> 

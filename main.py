@@ -275,8 +275,22 @@ def adminshowuserdata(id):
     cur = mysql.connection.cursor()
     if cur.execute('SELECT * FROM User_profile WHERE user_id = %s', [id]) == 1:
         data = cur.fetchone()
+        
+        cur.execute('SELECT * FROM User_login WHERE Id = %s', [id])
+        userdat = cur.fetchone()
         cur.close()
-        return render_template('adminshowprofile.html', adminshowprofile=data)
+        return render_template('adminshowprofile.html', adminshowprofile=data,userdat=userdat)
+    else:
+        flash("user not fill data") 
+        return redirect('/showuser')
+
+@app.route('/adminupdateprofile/<id>', methods=['GET','POST'])
+def adminupdateprofile(id):
+    cur = mysql.connection.cursor()
+    if cur.execute('SELECT * FROM User_profile WHERE user_id = %s', [id]) == 1:
+        data = cur.fetchone()
+        cur.close()
+        return render_template('adminupdateprofile.html', adminshowprofile=data)
     else:
         flash("user not fill data")
         return redirect('/showuser')
@@ -371,7 +385,7 @@ def adminupdateuserprofil(id):
             cur.close() 
             flash("user profile have successfull update ")
             return redirect('/showuser')
-    return render_template('adminshowprofile.html')
+    return render_template('adminupdateprofile.html')
 
 
 
@@ -545,6 +559,7 @@ def insertuserdata():
 @app.route('/updateuserprofiledata', methods=['GET','POST'])
 def updateuserprofiledata():
     uid=session['userid'] 
+    
     if request.method == 'POST':
         fname = request.form.get('firstname')
         lname = request.form.get('lastname')
@@ -639,11 +654,13 @@ def updateuserprofiledata():
 @app.route('/showuserdata')
 def show():
     userid = session['userid']
+    msgu = session['username'] 
+    msgemail = session['useremail']
     cur = mysql.connection.cursor()
     if cur.execute('SELECT * FROM User_profile WHERE user_id = %s', [userid]) == 1:
         data = cur.fetchone()
         cur.close()
-        return render_template('userprofile.html', userprofile=data)
+        return render_template('userprofile.html', userprofile=data,name=msgu,email=msgemail)
     else:
        
         flash("first of all you can fill your data")
