@@ -18,8 +18,15 @@
 
 <body class="section">
 
-    <div class="form-box">
+    <div class="form-box"> 
         <h1>Create Admin</h1>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        <p id="loginsuccess">{{ message }}</p>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}   
         <form id="login" class="input-group" action="{{ url_for('crateadmin')}}" method="POST" novalidate>
             <div class="control-group">
                 <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="Email"

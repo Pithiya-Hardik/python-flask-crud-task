@@ -144,20 +144,27 @@ def createuser():
             return render_template('create_user.html', umsg = usermassage) 
 
         else:
-            sms = 'your User Name Is :'+ user_email +'\n\n'
-            sms2 = 'Your Password Is :' + user_password + '\n\n'
-            sms3 = 'Now You Can Login our System And Create Your Profile click :'+'http://127.0.0.1:5000/userlogin'
-            sms4 = sms+sms2+sms3
-            print(sms4)
-            msg = Message('Hii Your User Name & Password', sender = 'pithiyahardik95@gmail.com', recipients = [user_email])
-            msg.body = sms4
-            mail.send(msg)
-            
-            cur.execute("INSERT INTO User_login (email, user_name, password) VALUES (%s,%s,md5(%s))", (user_email, user_name, user_password))
-            mysql.connection.commit()
-            cur.close() 
-            flash("user create successfull & Send Mail !")
-            return redirect('showuser')    
+
+            cur.execute('SELECT * FROM User_login WHERE email = %s', [user_email])
+            data = cur.fetchall()
+            if data:
+                flash('already exists')
+                return redirect('/createuser')
+            else:
+                sms = 'your User Name Is :'+ user_email +'\n\n'
+                sms2 = 'Your Password Is :' + user_password + '\n\n'
+                sms3 = 'Now You Can Login our System And Create Your Profile click :'+'http://127.0.0.1:5000/userlogin'
+                sms4 = sms+sms2+sms3
+                msg = Message('Hii Your User Name & Password', sender = 'pithiyahardik95@gmail.com', recipients = [user_email])
+                msg.body = sms4
+                mail.send(msg)
+
+                cur.execute("INSERT INTO User_login (email, user_name, password) VALUES (%s,%s,md5(%s))", (user_email, user_name, user_password))
+                mysql.connection.commit()
+                cur.close() 
+                flash("user create successfull & Send Mail !")
+                return redirect('showuser')    
+    return render_template('create_user.html')
 
 
 #========================================= show user code ==================================
@@ -691,11 +698,17 @@ def crateadmin():
     if request.method == 'POST':
         aemail = request.form.get('email')
         apassword = request.form.get('password')
-        cur.execute("INSERT INTO Admin_login (email, password) VALUES (%s,md5(%s))", (aemail, apassword))
-        mysql.connection.commit()
-        cur.close() 
-        flash("Admin create successfull !")
-        return redirect('adminlist')  
+        cur.execute('SELECT * FROM Admin_login WHERE email = %s', [aemail]) 
+        data = cur.fetchone()
+        if data:
+            flash('already exists')
+            return redirect('crateadmin')
+        else:
+            cur.execute("INSERT INTO Admin_login (email, password) VALUES (%s,md5(%s))", (aemail, apassword))
+            mysql.connection.commit()
+            cur.close() 
+            flash("Admin create successfull !")
+            return redirect('adminlist')  
     return render_template('admincrate.html')
 
 
@@ -746,17 +759,23 @@ def registeradmin():
     if request.method == 'POST':
         aemail = request.form.get('email')
         apassword = request.form.get('password')
-        cur.execute("INSERT INTO Admin_login (email, password) VALUES (%s,md5(%s))", (aemail, apassword))
-        mysql.connection.commit()
-        cur.close() 
-        flash("Register successfull !")
-        return redirect('adminlogin')  
+        cur.execute('SELECT * FROM Admin_login WHERE email = %s', [aemail]) 
+        data = cur.fetchone()
+        if data:
+            flash('already exists')
+            return redirect('/register')
+        else:
+            cur.execute("INSERT INTO Admin_login (email, password) VALUES (%s,md5(%s))", (aemail, apassword))
+            mysql.connection.commit()
+            cur.close() 
+            flash("Register successfull !")
+            return redirect('adminlogin')  
     return render_template('registeradmin.html')
 
 
 
 #======================================== user password forget ============================
-@app.route('/forgetpassword')
+@app.route('/forgetpassword', methods=['GET','POST'])
 def forgetpassword():
     return render_template('forgetpasswordlink.html')
 
@@ -764,16 +783,55 @@ def forgetpassword():
 def senteemailforget():
     if request.method == 'POST':
         email = request.form.get('uemail')
-        sms = 'Click To Set New Password '+ 'http://127.0.0.1:5000/setpassword'
-        msg = Message('Re Set Password', sender = 'pithiyahardik95@gmail.com', recipients = [email])
-        msg.body = sms
-        mail.send(msg)
-        flash('Plase Check Your Mail')
-        return redirect('/userlogin')
+        cur = mysql.connection.cursor()
+        cur.execute('SELECT id FROM User_login WHERE email = %s', [email]) 
+        
+        data = cur.fetchone()
+        if data:    
+            uid=data.get('id')
+            cur.close()
+            udata = str(uid)
 
-@app.route('/setpassword')
-def setpassword():
-    return render_template('userresetpassword.html')
+            sms = 'Click To Set New Password '+ 'http://127.0.0.1:5000/getdata/'+udata 
+            msg = Message('Re Set Password', sender = 'pithiyahardik95@gmail.com', recipients = [email])
+            msg.body = sms
+
+            mail.send(msg)
+            flash('Plase Check Your Mail')
+            return redirect('/userlogin')
+        else:
+             flash('you are not velid user')
+             return redirect('/userlogin')
+
+@app.route('/getdata/<int:id>', methods=['GET','POST'])
+def getdata(id):
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM User_login WHERE id = %s', [id]) 
+    data = cur.fetchone()
+    cur.close()
+    return render_template('userresetpassword.html',emaildata=data)
+
+@app.route('/resetpassworduser/<id>', methods=['GET','POST'])
+def resetpassworduser(id):
+    if request.method == 'POST':
+        password1 = request.form.get('password')
+        password2 = request.form.get('repassword')
+        
+        if password1 == password2 :
+            cur = mysql.connection.cursor()
+            cur.execute("UPDATE User_login SET password = MD5(%s) WHERE Id = %s",(password1, id) )
+            mysql.connection.commit()
+            flash(" password re set successfull !")
+            return redirect('/userlogin')
+        else:
+            cur = mysql.connection.cursor()
+            cur.execute("SELECT * FROM User_login WHERE id = %s", (id))
+            data = cur.fetchone()
+            cur.close()
+            msg = "your password not match plase try agin"
+            return render_template('userresetpassword.html', msg =msg, emaildata=data)
+
+        
 
 
 if __name__ == "__main__":
