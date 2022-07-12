@@ -18,16 +18,16 @@
     <div class="row">
         <div class="col-md-4 offset-md-4">
             <div class="card card-body">
-                <form  action="/updateuserprofiledata" id="login" method="POST" novalidate="novalidate">
+                <form  action="/updateuserprofiledata" id="login" method="POST" novalidate="novalidate" enctype="multipart/form-data">
                     
                     <div class="control-group">
                         <label>Email</label>
-                        <input type="text" name="firstname" value="{{email}}" class="form-control" readonly>
+                        <input type="text"  value="{{email}}" class="form-control" readonly>
                         
                     </div>
                     <div class="control-group">
                         <label>User Name</label>
-                        <input type="text" name="firstname" value="{{name}}" class="form-control" readonly>
+                        <input type="text"  value="{{name}}" class="form-control" readonly>
                         
                     </div>
                     
@@ -50,7 +50,11 @@
                         <div class="msg" style="color: red;">{{ lmsg }}</div>
                         <p class="text-danger help-block" id="velidesion"></p>
                     </div>
-
+                    <div>
+                        <label>Profile Picture</label>
+                        <input type="file" name="pic" class="form-control">
+                        {{msgimg}}
+                    </div>
                    
                     <div class=" control-group form-group">
                         <label>Date Of Birth</label>

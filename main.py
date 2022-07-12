@@ -1,12 +1,14 @@
-
-from crypt import methods
-import email
+from fileinput import filename
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-from flask_mysqldb import MySQL
+from flask_mysqldb import MySQL 
 import re
 from flask_mail import Mail, Message
 import datetime
 from datetime import timedelta
+from werkzeug.utils import secure_filename
+import uuid as uuid
+import os
+
 
 
 app = Flask(__name__)
@@ -19,6 +21,8 @@ app.config['MYSQL_PASSWORD'] = 'Sanskar'
 app.config['MYSQL_DB'] = 'system'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
+UPLOAD_FOLDER = 'static/userprofilepic/'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
@@ -113,95 +117,102 @@ def admindashboard():
 #================================= create user page =======================================
 @app.route('/createuser', methods = ['GET', 'POST'])
 def createuser():
-    cur = mysql.connection.cursor()
-    if request.method == 'POST':
-        user_email = request.form.get('email')
-        user_name = request.form.get('username')
-        user_password = request.form.get('password')
+    if 'loggedin' in session:
+        cur = mysql.connection.cursor()
+        if request.method == 'POST':
+            user_email = request.form.get('email')
+            user_name = request.form.get('username')
+            user_password = request.form.get('password')
 
-        if not user_email :
-            usermassage = 'blank  email not allowed'
-            return render_template('create_user.html', umsg = usermassage)
+            if not user_email :
+                usermassage = 'blank  email not allowed'
+                return render_template('create_user.html', umsg = usermassage)
 
-        elif not re.match(r'[^@]+@[^@]+\.[^@]+', user_email):
-            usermassage = 'Invalid email address !'    
-            return render_template('create_user.html', umsg = usermassage)
+            elif not re.match(r'[^@]+@[^@]+\.[^@]+', user_email):
+                usermassage = 'Invalid email address !'    
+                return render_template('create_user.html', umsg = usermassage)
 
-        elif not user_name:
-            usermassage = "blank user name not allowed !"
-            return render_template('create_user.html', umsg = usermassage)
+            elif not user_name:
+                usermassage = "blank user name not allowed !"
+                return render_template('create_user.html', umsg = usermassage)
 
-        elif not re.match(r'^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){1,18}[a-zA-Z0-9]$', user_name):
-            usermassage = "min 3 max 20 char,not allow special characters " 
-            return render_template('create_user.html', umsg = usermassage)
-           
-        elif not user_password:
-            usermassage = "blank  password not allowed"
-            return render_template('create_user.html', umsg = usermassage)
+            elif not re.match(r'^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){1,18}[a-zA-Z0-9]$', user_name):
+                usermassage = "min 3 max 20 char,not allow special characters " 
+                return render_template('create_user.html', umsg = usermassage)
 
-        elif not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$', user_password):
-            usermassage = "Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character:"
-            return render_template('create_user.html', umsg = usermassage) 
+            elif not user_password:
+                usermassage = "blank  password not allowed"
+                return render_template('create_user.html', umsg = usermassage)
 
-        else:
+            elif not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$', user_password):
+                usermassage = "Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character:"
+                return render_template('create_user.html', umsg = usermassage) 
 
-            cur.execute('SELECT * FROM User_login WHERE email = %s', [user_email])
-            data = cur.fetchall()
-            if data:
-                flash('already exists')
-                return redirect('/createuser')
             else:
-                sms = 'your User Name Is :'+ user_email +'\n\n'
-                sms2 = 'Your Password Is :' + user_password + '\n\n'
-                sms3 = 'Now You Can Login our System And Create Your Profile click :'+'http://127.0.0.1:5000/userlogin'
-                sms4 = sms+sms2+sms3
-                msg = Message('Hii Your User Name & Password', sender = 'pithiyahardik95@gmail.com', recipients = [user_email])
-                msg.body = sms4
-                mail.send(msg)
 
-                cur.execute("INSERT INTO User_login (email, user_name, password) VALUES (%s,%s,md5(%s))", (user_email, user_name, user_password))
-                mysql.connection.commit()
-                cur.close() 
-                flash("user create successfull & Send Mail !")
-                return redirect('showuser')    
-    return render_template('create_user.html')
+                cur.execute('SELECT * FROM User_login WHERE email = %s', [user_email])
+                data = cur.fetchall()
+                if data:
+                    flash('already exists')
+                    return redirect('/createuser')
+                else:
+                    sms = 'your User Name Is :'+ user_email +'\n\n'
+                    sms2 = 'Your Password Is :' + user_password + '\n\n'
+                    sms3 = 'Now You Can Login our System And Create Your Profile click :'+'http://127.0.0.1:5000/userlogin'
+                    sms4 = sms+sms2+sms3
+                    msg = Message('Hii Your User Name & Password', sender = 'pithiyahardik95@gmail.com', recipients = [user_email])
+                    msg.body = sms4
+                    mail.send(msg)
 
+                    cur.execute("INSERT INTO User_login (email, user_name, password) VALUES (%s,%s,md5(%s))", (user_email, user_name, user_password))
+                    mysql.connection.commit()
+                    cur.close() 
+                    flash("user create successfull & Send Mail !")
+                    return redirect('showuser')    
+        return render_template('create_user.html')
+    else:
+        return redirect('adminlogin')
 
 #========================================= show user code ==================================
 @app.route('/showuser', methods = ['GET','POST'])
 def showuser():
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM User_login")
-    data = cur.fetchall()
-    cur.close()
-    return render_template('user_list.html', user=data)
-
+    if 'loggedin' in session:
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM User_login")
+        data = cur.fetchall()
+        cur.close()
+        return render_template('user_list.html', user=data)
+    else:
+        return redirect('adminlogin')
 
 
 # ============================= get user id ======================================
 @app.route('/edit/<id>', methods=['POST', 'GET'])
 def get_employee(id):
+    if 'loggedin' in session:
+        cur = mysql.connection.cursor()
 
-    cur = mysql.connection.cursor()
-
-    cur.execute('SELECT * FROM User_login WHERE id = %s', [id])
-    data = cur.fetchall()
-    cur.close()
-    print(data[0])
-    return render_template('update.html', user=data[0])
-
+        cur.execute('SELECT * FROM User_login WHERE id = %s', [id])
+        data = cur.fetchall()
+        cur.close()
+        print(data[0])
+        return render_template('update.html', user=data[0])
+    else:
+        return redirect('adminlogin')
 
 
 # ================================= re set password id get===================================
 @app.route('/idgetresetpassword/<id>')
 def resetpassword(id):
-    cur = mysql.connection.cursor()
+    if 'loggedin' in session:
+        cur = mysql.connection.cursor()
 
-    cur.execute('SELECT * FROM User_login WHERE id = %s', [id])
-    data = cur.fetchone()
-    cur.close()
-    return render_template('resetpassword.html', resetp=data)
-
+        cur.execute('SELECT * FROM User_login WHERE id = %s', [id])
+        data = cur.fetchone()
+        cur.close()
+        return render_template('resetpassword.html', resetp=data)
+    else:
+        return redirect('adminlogin')
 # ============================= edit user for admin ======================================
 @app.route('/update/<id>', methods=['GET', 'POST'])
 def update(id):
@@ -282,20 +293,24 @@ def adminshowuserdata(id):
     cur = mysql.connection.cursor()
     if cur.execute('SELECT * FROM User_profile WHERE user_id = %s', [id]) == 1:
         data = cur.fetchone()
+        filename = data.get('img')
         
         cur.execute('SELECT * FROM User_login WHERE Id = %s', [id])
         userdat = cur.fetchone()
         cur.close()
-        return render_template('adminshowprofile.html', adminshowprofile=data,userdat=userdat)
+        return render_template('adminshowprofile.html', adminshowprofile=data,userdat=userdat,filename=filename)
     else:
         flash("user not fill data") 
         return redirect('/showuser')
 
+
+#================================== admin update user profile ================================
 @app.route('/adminupdateprofile/<id>', methods=['GET','POST'])
 def adminupdateprofile(id):
     cur = mysql.connection.cursor()
     if cur.execute('SELECT * FROM User_profile WHERE user_id = %s', [id]) == 1:
         data = cur.fetchone()
+       
         cur.close()
         return render_template('adminupdateprofile.html', adminshowprofile=data)
     else:
@@ -455,12 +470,27 @@ def userdashboard():
         msg = session['username'] 
         msgemail = session['useremail']
         cur = mysql.connection.cursor()
-        cur.execute('SELECT * FROM User_profile WHERE user_id = %s', [userid])
-        data = cur.fetchone()
-        cur.close()
-        return render_template('userwelcomepage.html',msg = msg,userprofile=data,msge=msgemail)
+        if cur.execute('SELECT * FROM User_profile WHERE user_id = %s', [userid]) == 1:
+            data = cur.fetchone()
+            filename = data.get('img')
+            cur.close()
+                  
+            return render_template('userwelcomepage.html',msg = msg,userprofile=data,msge=msgemail,filename=filename)
+        else:
+            cur = mysql.connection.cursor()
+            cur.execute('SELECT * FROM User_profile WHERE user_id = %s', [userid])
+            data = cur.fetchone()
+            cur.close()
+            filename ='defoultimg.png'
+            return render_template('userwelcomepage.html',msg = msg,userprofile=data,msge=msgemail,filename=filename)
+
     else:
         return redirect('userlogin')
+
+@app.route('/display/<filename>')
+def display_image(filename):
+	
+	return redirect(url_for('static', filename='userprofilepic/' + filename), code=301)
 
 # ================= check profile ==========================
 @app.route('/checkuserprofile', methods=['GET','POST'])
@@ -475,6 +505,11 @@ def checkuserprofile():
         return redirect('/insertuserdata')
     
 #==================================== user data insert ==================================================
+ALLOWED_EXTENSIONS = set(['png', 'jpg'])
+
+def allowed_file(filename):
+	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 @app.route('/insertuserdata', methods=['GET','POST'])
 def insertuserdata():
     uid=session['userid']
@@ -483,6 +518,8 @@ def insertuserdata():
     if request.method == 'POST':
         fname = request.form.get('firstname')
         lname = request.form.get('lastname')
+        file = request.files.get('pic')
+        print(file)
         dob = request.form.get('dob')
         mno = request.form.get('mno')
         gender = request.form.get('gender')
@@ -552,24 +589,38 @@ def insertuserdata():
             return render_template('userfilldata.html', zmsg=msg)
 
         else:
-        
-            cur = mysql.connection.cursor()
-            cur.execute("INSERT INTO User_profile (user_id,first_name, last_name, date_of_birth,mobile_number,gender,address,city,state,zipcode,profile_updated_dt) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,curdate())",
-            (uid,fname,lname,dob,mno,gender,address,city,state,zipcode))
-            mysql.connection.commit()
-            cur.close() 
-            flash("you have successfull create your profile")
-            return redirect('/userdashboard')
+            if file and allowed_file(file.filename):
+                files = secure_filename(file.filename)  
+
+                filename = str(uuid.uuid1()) + "_" + files
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
+                file = filename
+
+                cur = mysql.connection.cursor()
+                cur.execute("INSERT INTO User_profile (user_id,first_name, last_name, date_of_birth,mobile_number,gender,address,city,state,zipcode,img,profile_updated_dt) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,curdate())",
+                (uid,fname,lname,dob,mno,gender,address,city,state,zipcode,filename))
+                mysql.connection.commit()
+                cur.close() 
+                flash("you have successfull create your profile")
+                return redirect('/userdashboard')
+            else:
+                msg = 'only png and jpg allowed'
+                return render_template('userfilldata.html',name=msgu,email=msgemail,file=msg)
     return render_template('userfilldata.html',name=msgu,email=msgemail)
 
 # ======================================= user profile update ================================
+
+
+
 @app.route('/updateuserprofiledata', methods=['GET','POST'])
 def updateuserprofiledata():
     uid=session['userid'] 
-    
+    msgu = session['username'] 
+    msgemail = session['useremail']
     if request.method == 'POST':
         fname = request.form.get('firstname')
         lname = request.form.get('lastname')
+        file = request.files.get('pic')
         dob = request.form.get('dob')
         mno = request.form.get('mno')
         gender = request.form.get('gender')
@@ -646,16 +697,30 @@ def updateuserprofiledata():
             return render_template('userprofile.html', zmsg=msg, userprofile=data)
         
         else:
-            cur = mysql.connection.cursor()
-            cur.execute("update User_profile set first_name=%s, last_name=%s, date_of_birth=%s,mobile_number=%s,gender=%s,address=%s,city=%s,state=%s,zipcode=%s,profile_updated_dt=curdate() where user_id=%s",(fname,lname,dob,mno,gender,address,city,state,zipcode,uid))
+            if file and allowed_file(file.filename):
+                files = secure_filename(file.filename)
+               
+                filename = str(uuid.uuid1()) + "_" + files
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
+                file = filename
+                cur = mysql.connection.cursor()
+                cur.execute("update User_profile set first_name=%s, last_name=%s, date_of_birth=%s,mobile_number=%s,gender=%s,address=%s,city=%s,state=%s,zipcode=%s,profile_updated_dt=curdate(), img=%s where user_id=%s",(fname,lname,dob,mno,gender,address,city,state,zipcode,filename,uid))
 
-            mysql.connection.commit()
-            cur.close() 
-            flash("you have successfull update your profile")
-            return redirect('/userdashboard')
+                mysql.connection.commit()
+                cur.execute('SELECT * FROM User_profile WHERE user_id = %s', [uid])
+                data = cur.fetchone()
+                cur.close() 
+                success = "you have successfull update your profile"
+                return render_template('userwelcomepage.html',msg = msgu,userprofile=data,msge=msgemail,success=success,filename=filename)
+                
+            else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM User_profile WHERE user_id = %s', [uid])
+                data = cur.fetchone()
+                cur.close()
+                msg = 'Allowed image types are -> png, jpg'
+                return render_template('userprofile.html', msgimg=msg, userprofile=data,name=msgu,email=msgemail)
     return render_template('userprofile.html')
-
-
 
 # ========================================= user profile show =================================
 @app.route('/showuserdata')
@@ -684,33 +749,37 @@ def show():
 
 @app.route('/adminlist', methods = ['GET','POST'])
 def adminlist():
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM Admin_login")
-    data = cur.fetchall()
-    cur.close()
-    return render_template('newadmincrate.html', user=data)
-
+    if 'loggedin' in session:
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM Admin_login")
+        data = cur.fetchall()
+        cur.close()
+        return render_template('newadmincrate.html', user=data)
+    else:
+        return redirect('adminlogin')
 
 #================================ new admin add ============================================
 @app.route('/crateadmin', methods=['GET','POST'])
 def crateadmin():
-    cur = mysql.connection.cursor()
-    if request.method == 'POST':
-        aemail = request.form.get('email')
-        apassword = request.form.get('password')
-        cur.execute('SELECT * FROM Admin_login WHERE email = %s', [aemail]) 
-        data = cur.fetchone()
-        if data:
-            flash('already exists')
-            return redirect('crateadmin')
-        else:
-            cur.execute("INSERT INTO Admin_login (email, password) VALUES (%s,md5(%s))", (aemail, apassword))
-            mysql.connection.commit()
-            cur.close() 
-            flash("Admin create successfull !")
-            return redirect('adminlist')  
-    return render_template('admincrate.html')
-
+    if 'loggedin' in session:
+        cur = mysql.connection.cursor()
+        if request.method == 'POST':
+            aemail = request.form.get('email')
+            apassword = request.form.get('password')
+            cur.execute('SELECT * FROM Admin_login WHERE email = %s', [aemail]) 
+            data = cur.fetchone()
+            if data:
+                flash('already exists')
+                return redirect('crateadmin')
+            else:
+                cur.execute("INSERT INTO Admin_login (email, password) VALUES (%s,md5(%s))", (aemail, apassword))
+                mysql.connection.commit()
+                cur.close() 
+                flash("Admin create successfull !")
+                return redirect('adminlist')  
+        return render_template('admincrate.html')
+    else:
+        return redirect('adminlogin')
 
 #=========================== admin show data ======================================
 @app.route('/getadminedit/<id>', methods=['POST', 'GET'])
