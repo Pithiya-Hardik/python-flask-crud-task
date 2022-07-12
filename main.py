@@ -1,3 +1,4 @@
+from ast import And
 from fileinput import filename
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_mysqldb import MySQL 
@@ -20,6 +21,9 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'Sanskar'
 app.config['MYSQL_DB'] = 'system'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+
+UPLOAD_FOLDER_PDF = 'static/birthpdf/'
+app.config['UPLOAD_FOLDER_PDF'] = UPLOAD_FOLDER_PDF
 
 UPLOAD_FOLDER = 'static/userprofilepic/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -510,6 +514,11 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg'])
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+ALLOWED_EXTENSIONS_PDF = set(['pdf']) 
+
+def pdf_file(filename):
+     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS_PDF
+    
 @app.route('/insertuserdata', methods=['GET','POST'])
 def insertuserdata():
     uid=session['userid']
@@ -519,7 +528,7 @@ def insertuserdata():
         fname = request.form.get('firstname')
         lname = request.form.get('lastname')
         file = request.files.get('pic')
-        print(file)
+        birth = request.files.get('birthCertificate')
         dob = request.form.get('dob')
         mno = request.form.get('mno')
         gender = request.form.get('gender')
@@ -589,16 +598,20 @@ def insertuserdata():
             return render_template('userfilldata.html', zmsg=msg)
 
         else:
-            if file and allowed_file(file.filename):
+            
+            if file and allowed_file(file.filename) and  birth and pdf_file(birth.filename):
                 files = secure_filename(file.filename)  
+                birth = secure_filename(birth.filename)
 
                 filename = str(uuid.uuid1()) + "_" + files
+                birth = str(uuid.uuid1()) + "_" + birth 
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
-                file = filename
+                file.save(os.path.join(app.config['UPLOAD_FOLDER_PDF'],birth))
+                
 
                 cur = mysql.connection.cursor()
-                cur.execute("INSERT INTO User_profile (user_id,first_name, last_name, date_of_birth,mobile_number,gender,address,city,state,zipcode,img,profile_updated_dt) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,curdate())",
-                (uid,fname,lname,dob,mno,gender,address,city,state,zipcode,filename))
+                cur.execute("INSERT INTO User_profile (user_id,first_name, last_name, date_of_birth,mobile_number,gender,address,city,state,zipcode,img,birthpdf,profile_updated_dt) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,curdate())",
+                (uid,fname,lname,dob,mno,gender,address,city,state,zipcode,filename,birth))
                 mysql.connection.commit()
                 cur.close() 
                 flash("you have successfull create your profile")
