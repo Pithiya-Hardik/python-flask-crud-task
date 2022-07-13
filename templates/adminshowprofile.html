@@ -132,6 +132,11 @@
                                         </div>
                                         <input type="date" value="{{adminshowprofile.profile_updated_dt}}" readonly>
                                     </div>
+                                    {% if filename %}
+                                    <div>
+                                        <a href="{{ url_for('show_pdf', birth=birth) }}" >Show PDF</a>
+                                    </div>
+                                    {% endif %}
                                 </div>
 
 

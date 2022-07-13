@@ -137,8 +137,18 @@
                                             <label>Profile Update date</label>
                                         </div>
                                         <input type="date" value="{{userprofile.profile_updated_dt}}" readonly>
-                                    </div>
+                                    </div>  
+                                                                   
                                 </div>
+                               
+                                {% if filename %}
+                                <div>
+                                    <a href="{{ url_for('show_pdf', birth=birth) }}" >Show PDF</a>
+                                </div>
+                                {% endif %}
+                                
+                                
+                                
 
 
                             </div>

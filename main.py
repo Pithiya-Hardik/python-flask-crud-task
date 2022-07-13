@@ -1,14 +1,14 @@
-from ast import And
 from fileinput import filename
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_mysqldb import MySQL 
-import re
+import re, os
 from flask_mail import Mail, Message
-import datetime
+
 from datetime import timedelta
 from werkzeug.utils import secure_filename
 import uuid as uuid
-import os
+
+
 
 
 
@@ -22,8 +22,9 @@ app.config['MYSQL_PASSWORD'] = 'Sanskar'
 app.config['MYSQL_DB'] = 'system'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
-UPLOAD_FOLDER_PDF = 'static/birthpdf/'
-app.config['UPLOAD_FOLDER_PDF'] = UPLOAD_FOLDER_PDF
+UPLOAD_FOLDER = 'static/birthpdf/'
+app.config['UPLOAD_FOLDER_PDF'] = UPLOAD_FOLDER
+
 
 UPLOAD_FOLDER = 'static/userprofilepic/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -298,11 +299,11 @@ def adminshowuserdata(id):
     if cur.execute('SELECT * FROM User_profile WHERE user_id = %s', [id]) == 1:
         data = cur.fetchone()
         filename = data.get('img')
-        
+        birth = data.get('birthpdf')
         cur.execute('SELECT * FROM User_login WHERE Id = %s', [id])
         userdat = cur.fetchone()
         cur.close()
-        return render_template('adminshowprofile.html', adminshowprofile=data,userdat=userdat,filename=filename)
+        return render_template('adminshowprofile.html', adminshowprofile=data,userdat=userdat,filename=filename,birth=birth)
     else:
         flash("user not fill data") 
         return redirect('/showuser')
@@ -477,16 +478,18 @@ def userdashboard():
         if cur.execute('SELECT * FROM User_profile WHERE user_id = %s', [userid]) == 1:
             data = cur.fetchone()
             filename = data.get('img')
+            births = data.get('birthpdf')
             cur.close()
                   
-            return render_template('userwelcomepage.html',msg = msg,userprofile=data,msge=msgemail,filename=filename)
+            return render_template('userwelcomepage.html',msg = msg,userprofile=data,msge=msgemail,filename=filename,birth=births)
         else:
             cur = mysql.connection.cursor()
             cur.execute('SELECT * FROM User_profile WHERE user_id = %s', [userid])
             data = cur.fetchone()
             cur.close()
             filename ='defoultimg.png'
-            return render_template('userwelcomepage.html',msg = msg,userprofile=data,msge=msgemail,filename=filename)
+            birthemty = " "
+            return render_template('userwelcomepage.html',msg = msg,userprofile=data,msge=msgemail,filename=filename,birth=birthemty)
 
     else:
         return redirect('userlogin')
@@ -495,6 +498,12 @@ def userdashboard():
 def display_image(filename):
 	
 	return redirect(url_for('static', filename='userprofilepic/' + filename), code=301)
+
+@app.route('/show/<birth>')
+def show_pdf(birth):
+	
+	return redirect(url_for('static', filename='birthpdf/' + birth), code=301)
+
 
 # ================= check profile ==========================
 @app.route('/checkuserprofile', methods=['GET','POST'])
@@ -509,15 +518,15 @@ def checkuserprofile():
         return redirect('/insertuserdata')
     
 #==================================== user data insert ==================================================
-ALLOWED_EXTENSIONS = set(['png', 'jpg'])
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'pdf'])
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 ALLOWED_EXTENSIONS_PDF = set(['pdf']) 
 
-def pdf_file(filename):
-     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS_PDF
+def allowed_pdf(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS_PDF
     
 @app.route('/insertuserdata', methods=['GET','POST'])
 def insertuserdata():
@@ -528,7 +537,7 @@ def insertuserdata():
         fname = request.form.get('firstname')
         lname = request.form.get('lastname')
         file = request.files.get('pic')
-        birth = request.files.get('birthCertificate')
+        birth = request.files['birthCertificate']
         dob = request.form.get('dob')
         mno = request.form.get('mno')
         gender = request.form.get('gender')
@@ -599,26 +608,28 @@ def insertuserdata():
 
         else:
             
-            if file and allowed_file(file.filename) and  birth and pdf_file(birth.filename):
+            if file and allowed_file(file.filename) and  birth and allowed_pdf(birth.filename):
                 files = secure_filename(file.filename)  
-                birth = secure_filename(birth.filename)
+                births = secure_filename(birth.filename)
+                
 
                 filename = str(uuid.uuid1()) + "_" + files
-                birth = str(uuid.uuid1()) + "_" + birth 
+                birthpdf = str(uuid.uuid1()) + "_" + births 
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
-                file.save(os.path.join(app.config['UPLOAD_FOLDER_PDF'],birth))
+                birth.save(os.path.join(app.config['UPLOAD_FOLDER_PDF'],birthpdf))
                 
 
                 cur = mysql.connection.cursor()
                 cur.execute("INSERT INTO User_profile (user_id,first_name, last_name, date_of_birth,mobile_number,gender,address,city,state,zipcode,img,birthpdf,profile_updated_dt) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,curdate())",
-                (uid,fname,lname,dob,mno,gender,address,city,state,zipcode,filename,birth))
+                (uid,fname,lname,dob,mno,gender,address,city,state,zipcode,filename,birthpdf))
                 mysql.connection.commit()
                 cur.close() 
                 flash("you have successfull create your profile")
                 return redirect('/userdashboard')
             else:
                 msg = 'only png and jpg allowed'
-                return render_template('userfilldata.html',name=msgu,email=msgemail,file=msg)
+                pdf = 'only .pdf allowed'
+                return render_template('userfilldata.html',name=msgu,email=msgemail,file=msg,pdf=pdf)
     return render_template('userfilldata.html',name=msgu,email=msgemail)
 
 # ======================================= user profile update ================================
@@ -634,6 +645,7 @@ def updateuserprofiledata():
         fname = request.form.get('firstname')
         lname = request.form.get('lastname')
         file = request.files.get('pic')
+        birth = request.files['birthCertificate']
         dob = request.form.get('dob')
         mno = request.form.get('mno')
         gender = request.form.get('gender')
@@ -710,21 +722,24 @@ def updateuserprofiledata():
             return render_template('userprofile.html', zmsg=msg, userprofile=data)
         
         else:
-            if file and allowed_file(file.filename):
+            if file and allowed_file(file.filename) and  birth and allowed_pdf(birth.filename):
                 files = secure_filename(file.filename)
+                births = secure_filename(birth.filename)
                
                 filename = str(uuid.uuid1()) + "_" + files
+                birthpdf = str(uuid.uuid1()) + "_" + births 
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
-                file = filename
+                birth.save(os.path.join(app.config['UPLOAD_FOLDER_PDF'],birthpdf))
+        
                 cur = mysql.connection.cursor()
-                cur.execute("update User_profile set first_name=%s, last_name=%s, date_of_birth=%s,mobile_number=%s,gender=%s,address=%s,city=%s,state=%s,zipcode=%s,profile_updated_dt=curdate(), img=%s where user_id=%s",(fname,lname,dob,mno,gender,address,city,state,zipcode,filename,uid))
+                cur.execute("update User_profile set first_name=%s, last_name=%s, date_of_birth=%s,mobile_number=%s,gender=%s,address=%s,city=%s,state=%s,zipcode=%s,profile_updated_dt=curdate(), img=%s, birthpdf=%s where user_id=%s",(fname,lname,dob,mno,gender,address,city,state,zipcode,filename,birthpdf,uid))
 
                 mysql.connection.commit()
                 cur.execute('SELECT * FROM User_profile WHERE user_id = %s', [uid])
                 data = cur.fetchone()
                 cur.close() 
                 success = "you have successfull update your profile"
-                return render_template('userwelcomepage.html',msg = msgu,userprofile=data,msge=msgemail,success=success,filename=filename)
+                return render_template('userwelcomepage.html',msg = msgu,userprofile=data,msge=msgemail,success=success,filename=filename,birth=birthpdf)
                 
             else:
                 cur = mysql.connection.cursor()
@@ -732,7 +747,8 @@ def updateuserprofiledata():
                 data = cur.fetchone()
                 cur.close()
                 msg = 'Allowed image types are -> png, jpg'
-                return render_template('userprofile.html', msgimg=msg, userprofile=data,name=msgu,email=msgemail)
+                pdf = 'only .pdf allowed'
+                return render_template('userprofile.html', msgimg=msg, userprofile=data,name=msgu,email=msgemail,pdf=pdf)
     return render_template('userprofile.html')
 
 # ========================================= user profile show =================================
@@ -917,4 +933,4 @@ def resetpassworduser(id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="127.0.0.1",port = 5000)
