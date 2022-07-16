@@ -221,6 +221,11 @@ samp
         background-repeat: no-repeat;
         margin-top: 50px;
     }
+    #login
+    {
+        left: 30px;
+        /* width: 300px; */
+    }
 }
 @media screen and (max-width:375px) {
     .bgadminlogin
@@ -326,6 +331,7 @@ samp
     font-family: sans-serif; 
     min-width: 400px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    
 }
 
 .styled-table thead tr {
@@ -341,9 +347,27 @@ samp
 .styled-table td {
     padding: 12px 15px;
 }
-#button
+@media screen and (max-width:820px) {
+    .styled-table td
+    {
+        font-size: 25px;
+    }
+}
+
+@media screen and (max-width:375px) {
+    .styled-table td
+    {
+        font-size: 20px;
+    }
+    .usertable
+    {
+        display:block;
+    }   
+}
+#button 
 {
     text-align: center;
+    display: inline-flex;
 }
 .styled-table tbody tr {
     border-bottom: 1px solid #dddddd;
@@ -592,6 +616,34 @@ p
     box-shadow: 0 1px 20px 0 rgba(69,90,100,0.08);
     border: none;
     margin-bottom: 30px;
+    
+}
+
+@media screen and (max-width:820px) {
+    .card {
+        border-radius: 5px;
+        -webkit-box-shadow: 0 1px 20px 0 rgba(69,90,100,0.08);
+        box-shadow: 0 1px 20px 0 rgba(69,90,100,0.08);
+        border: none;
+        margin-bottom: 30px;
+        width: 600px;
+    }
+    .offset-md-4 {
+        margin-left: 100px;
+    }
+}
+@media screen and (max-width:375px) {
+    .card {
+        border-radius: 5px;
+        -webkit-box-shadow: 0 1px 20px 0 rgba(69,90,100,0.08);
+        box-shadow: 0 1px 20px 0 rgba(69,90,100,0.08);
+        border: none;
+        margin-bottom: 30px;
+        width: 100%;
+    }
+    .offset-md-4 {
+        margin-left: 0;
+    }
 }
 
 .m-r-0 {

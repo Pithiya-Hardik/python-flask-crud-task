@@ -24,7 +24,7 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 UPLOAD_FOLDER = 'static/birthpdf/'
 app.config['UPLOAD_FOLDER_PDF'] = UPLOAD_FOLDER
-
+app.config['MAX_CONTENT_LENGTH'] = 3 * 1024 * 1024 
 
 UPLOAD_FOLDER = 'static/userprofilepic/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -221,198 +221,213 @@ def resetpassword(id):
 # ============================= edit user for admin ======================================
 @app.route('/update/<id>', methods=['GET', 'POST'])
 def update(id):
-    if request.method == 'POST':
-       
-        email = request.form.get('uemail')
-        username = request.form.get('username')
+    if 'loggedin' in session:
+        if request.method == 'POST':
+        
+            email = request.form.get('uemail')
+            username = request.form.get('username')
 
-        cur = mysql.connection.cursor()
-
-        cur.execute('SELECT * FROM User_login WHERE id = %s', [id])
-        data = cur.fetchall()
-        cur.close()
-        print(data[0])
-
-        if not email :
-            usermassage = 'blank  email not allowed'
-            return render_template('update.html', user=data[0], umsg=usermassage)
-
-        elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
-            usermassage = 'Invalid email address !'    
-            return render_template('update.html', user=data[0], umsg=usermassage)
-
-        elif not username:
-            usermassage = "blank user name not allowed !"
-            return render_template('update.html', user=data[0], umsg=usermassage)
-
-        elif not re.match(r'^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){1,18}[a-zA-Z0-9]$', username):
-            usermassage = "min 3 max 20 char,not allow special characters " 
-            return render_template('update.html', user=data[0], umsg=usermassage)
-
-        else:
             cur = mysql.connection.cursor()
-            cur.execute("UPDATE User_login SET email = %s, user_name = %s WHERE Id = %s",(email, username, id) ) 
-            mysql.connection.commit()
-            flash("user update successfull !")
-            return redirect(url_for('showuser'))
 
+            cur.execute('SELECT * FROM User_login WHERE id = %s', [id])
+            data = cur.fetchall()
+            cur.close()
+            print(data[0])
+
+            if not email :
+                usermassage = 'blank  email not allowed'
+                return render_template('update.html', user=data[0], umsg=usermassage)
+
+            elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
+                usermassage = 'Invalid email address !'    
+                return render_template('update.html', user=data[0], umsg=usermassage)
+
+            elif not username:
+                usermassage = "blank user name not allowed !"
+                return render_template('update.html', user=data[0], umsg=usermassage)
+
+            elif not re.match(r'^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){1,18}[a-zA-Z0-9]$', username):
+                usermassage = "min 3 max 20 char,not allow special characters " 
+                return render_template('update.html', user=data[0], umsg=usermassage)
+
+            else:
+                cur = mysql.connection.cursor()
+                cur.execute("UPDATE User_login SET email = %s, user_name = %s WHERE Id = %s",(email, username, id) ) 
+                mysql.connection.commit()
+                flash("user update successfull !")
+                return redirect(url_for('showuser'))
+    else:
+        return redirect('adminlogin')
 
 
 # ============================= delete user for admin ======================================
 @app.route('/delete/<string:id>', methods=['POST', 'GET'])
 def delete_user(id):
-    cur = mysql.connection.cursor()
+    if 'loggedin' in session:
+        cur = mysql.connection.cursor()
 
-    cur.execute('DELETE FROM User_login WHERE id = {0}'.format(id))   
-    mysql.connection.commit()
-    flash("user delete successfull !")
-    return redirect(url_for('showuser'))
-
+        cur.execute('DELETE FROM User_login WHERE id = {0}'.format(id))   
+        mysql.connection.commit()
+        flash("user delete successfull !")
+        return redirect(url_for('showuser'))
+    else:
+        return redirect('adminlogin')
 
 #======================================= re set password ===================================
 @app.route('/resetpassword/<id>', methods = ['GET', 'POST'])
 def resetpass(id):
-    if request.method == 'POST':
-        password1 = request.form.get('password')
-        password2 = request.form.get('repassword')
-        
-        if password1 == password2 :
-            cur = mysql.connection.cursor()
-            cur.execute("UPDATE User_login SET password = MD5(%s) WHERE Id = %s",(password1, id) )
-            mysql.connection.commit()
-            flash("user password re set successfull !")
-            return redirect('/showuser')
-        else:
-            cur = mysql.connection.cursor()
-            cur.execute("SELECT * FROM User_login WHERE id = %s", (id))
-            data = cur.fetchone()
-            cur.close()
-            msg = "your password not match plase try agin"
-            return render_template('resetpassword.html', msg =msg, resetp=data)
+    if 'loggedin' in session:
+        if request.method == 'POST':
+            password1 = request.form.get('password')
+            password2 = request.form.get('repassword')
 
-    return render_template('resetpassword.html')
+            if password1 == password2 :
+                cur = mysql.connection.cursor()
+                cur.execute("UPDATE User_login SET password = MD5(%s) WHERE Id = %s",(password1, id) )
+                mysql.connection.commit()
+                flash("user password re set successfull !")
+                return redirect('/showuser')
+            else:
+                cur = mysql.connection.cursor()
+                cur.execute("SELECT * FROM User_login WHERE id = %s", (id))
+                data = cur.fetchone()
+                cur.close()
+                msg = "your password not match plase try agin"
+                return render_template('resetpassword.html', msg =msg, resetp=data)
+        
+        return render_template('resetpassword.html')
+    else:
+        return redirect('adminlogin')
+    
 
 # ============================== admin show user profile ===================================
 @app.route('/adminshowuserdata/<id>', methods=['GET','POST'])
 def adminshowuserdata(id):
-    cur = mysql.connection.cursor()
-    if cur.execute('SELECT * FROM User_profile WHERE user_id = %s', [id]) == 1:
-        data = cur.fetchone()
-        filename = data.get('img')
-        birth = data.get('birthpdf')
-        cur.execute('SELECT * FROM User_login WHERE Id = %s', [id])
-        userdat = cur.fetchone()
-        cur.close()
-        return render_template('adminshowprofile.html', adminshowprofile=data,userdat=userdat,filename=filename,birth=birth)
+    if 'loggedin' in session:
+        cur = mysql.connection.cursor()
+        if cur.execute('SELECT * FROM User_profile WHERE user_id = %s', [id]) == 1:
+            data = cur.fetchone()
+            filename = data.get('img')
+            birth = data.get('birthpdf')
+            cur.execute('SELECT * FROM User_login WHERE Id = %s', [id])
+            userdat = cur.fetchone()
+            cur.close()
+            return render_template('adminshowprofile.html', adminshowprofile=data,userdat=userdat,filename=filename,birth=birth)
+        else:
+            flash("user not fill data") 
+            return redirect('/showuser')
     else:
-        flash("user not fill data") 
-        return redirect('/showuser')
-
+        return redirect('adminlogin')
 
 #================================== admin update user profile ================================
 @app.route('/adminupdateprofile/<id>', methods=['GET','POST'])
 def adminupdateprofile(id):
-    cur = mysql.connection.cursor()
-    if cur.execute('SELECT * FROM User_profile WHERE user_id = %s', [id]) == 1:
-        data = cur.fetchone()
-       
-        cur.close()
-        return render_template('adminupdateprofile.html', adminshowprofile=data)
-    else:
-        flash("user not fill data")
-        return redirect('/showuser')
+    if 'loggedin' in session:
+        cur = mysql.connection.cursor()
+        if cur.execute('SELECT * FROM User_profile WHERE user_id = %s', [id]) == 1:
+            data = cur.fetchone()
 
+            cur.close()
+            return render_template('adminupdateprofile.html', adminshowprofile=data)
+        else:
+            flash("user not fill data")
+            return redirect('/showuser')
+    else:
+        return redirect('adminlogin')
 #======================= admin update user profile ========================================
 @app.route('/adminupdateuserprofil/<id>', methods=['GET','POST'])
 def adminupdateuserprofil(id):
-   
-    if request.method == 'POST':
-        fname = request.form.get('firstname')
-        lname = request.form.get('lastname')
-        dob = request.form.get('dob')
-        mno = request.form.get('mno')
-        gender = request.form.get('gender')
-        address = request.form.get('address')
-        city = request.form.get('city')
-        state = request.form.get('state')
-        zipcode = request.form.get('zipcode')
+    if 'loggedin' in session:
+        if request.method == 'POST':
+            fname = request.form.get('firstname')
+            lname = request.form.get('lastname')
+            dob = request.form.get('dob')
+            mno = request.form.get('mno')
+            gender = request.form.get('gender')
+            address = request.form.get('address')
+            city = request.form.get('city')
+            state = request.form.get('state')
+            zipcode = request.form.get('zipcode')
 
-
-        cur = mysql.connection.cursor()
-        cur.execute('SELECT * FROM User_profile WHERE user_id = %s', [id])
-        data = cur.fetchone()
-        cur.close()
-
-        if not fname:
-            msg = "blank  first name not allowed"
-            return render_template('adminshowprofile.html', msg=msg, adminshowprofile=data)
-
-        elif not re.match(r'[a-zA-Z ]+',fname):
-            msg = 'only characters allowed'
-            return render_template('adminshowprofile.html', msg=msg, adminshowprofile=data)
-
-        elif not lname:
-            lmsg = "blank  last name not allowed"
-            return render_template('adminshowprofile.html', lmsg=lmsg, adminshowprofile=data)
-
-        elif not re.match(r'[a-zA-Z ]+',lname):
-            lmsg = 'only characters allowed'
-            return render_template('adminshowprofile.html', lmsg=msg, adminshowprofile=data)
-
-        elif not dob:
-            lmsg = "blank  not allowed"
-            return render_template('adminshowprofile.html', dmsg=lmsg, adminshowprofile=data)
-
-        elif not mno:
-            lmsg = "blank  not allowed"
-            return render_template('adminshowprofile.html', nmsg=lmsg, adminshowprofile=data)
-
-        elif not re.match(r'[0-9]{10}', mno):
-            msg = "only 10 digits allowed"
-            return render_template('adminshowprofile.html', nmsg=msg, adminshowprofile=data)
-
-        elif not gender:
-            lmsg = "blank  not allowed"
-            return render_template('adminshowprofile.html', gmsg=lmsg, adminshowprofile=data)
-
-        elif not address:
-            lmsg = "blank  not allowed"
-            return render_template('adminshowprofile.html', amsg=lmsg, adminshowprofile=data)
-
-        elif not city:
-            lmsg = "blank  not allowed"
-            return render_template('adminshowprofile.html', cmsg=lmsg, adminshowprofile=data)
-
-        elif not re.match(r'[a-zA-Z ]+',city):
-            cmsg = 'only characters allowed'
-            return render_template('adminshowprofile.html', cmsg=cmsg, adminshowprofile=data)
-
-        elif not state:
-            lmsg = "blank  not allowed"
-            return render_template('adminshowprofile.html', smsg=lmsg, adminshowprofile=data)
-
-        elif not re.match(r'[a-zA-Z ]+',state):
-            msg = 'only characters allowed'
-            return render_template('adminshowprofile.html', smsg=msg, adminshowprofile=data)
-
-        elif not zipcode:
-            lmsg = "blank  not allowed"
-            return render_template('adminshowprofile.html', zmsg=lmsg, adminshowprofile=data)
-
-        elif not re.match(r'[0-9]{6}', zipcode):
-            msg = "only 6 digits allowed"
-            return render_template('adminshowprofile.html', zmsg=msg, adminshowprofile=data)
-        
-        else:
 
             cur = mysql.connection.cursor()
-            cur.execute("update User_profile set first_name=%s, last_name=%s, date_of_birth=%s,mobile_number=%s,gender=%s,address=%s,city=%s,state=%s,zipcode=%s,profile_updated_dt=curdate() where user_id=%s",(fname,lname,dob,mno,gender,address,city,state,zipcode,id))
+            cur.execute('SELECT * FROM User_profile WHERE user_id = %s', [id])
+            data = cur.fetchone()
+            cur.close()
 
-            mysql.connection.commit()
-            cur.close() 
-            flash("user profile have successfull update ")
-            return redirect('/showuser')
-    return render_template('adminupdateprofile.html')
+            if not fname:
+                msg = "blank  first name not allowed"
+                return render_template('adminshowprofile.html', msg=msg, adminshowprofile=data)
+
+            elif not re.match(r'[a-zA-Z ]+',fname):
+                msg = 'only characters allowed'
+                return render_template('adminshowprofile.html', msg=msg, adminshowprofile=data)
+
+            elif not lname:
+                lmsg = "blank  last name not allowed"
+                return render_template('adminshowprofile.html', lmsg=lmsg, adminshowprofile=data)
+
+            elif not re.match(r'[a-zA-Z ]+',lname):
+                lmsg = 'only characters allowed'
+                return render_template('adminshowprofile.html', lmsg=msg, adminshowprofile=data)
+
+            elif not dob:
+                lmsg = "blank  not allowed"
+                return render_template('adminshowprofile.html', dmsg=lmsg, adminshowprofile=data)
+
+            elif not mno:
+                lmsg = "blank  not allowed"
+                return render_template('adminshowprofile.html', nmsg=lmsg, adminshowprofile=data)
+
+            elif not re.match(r'[0-9]{10}', mno):
+                msg = "only 10 digits allowed"
+                return render_template('adminshowprofile.html', nmsg=msg, adminshowprofile=data)
+
+            elif not gender:
+                lmsg = "blank  not allowed"
+                return render_template('adminshowprofile.html', gmsg=lmsg, adminshowprofile=data)
+
+            elif not address:
+                lmsg = "blank  not allowed"
+                return render_template('adminshowprofile.html', amsg=lmsg, adminshowprofile=data)
+
+            elif not city:
+                lmsg = "blank  not allowed"
+                return render_template('adminshowprofile.html', cmsg=lmsg, adminshowprofile=data)
+
+            elif not re.match(r'[a-zA-Z ]+',city):
+                cmsg = 'only characters allowed'
+                return render_template('adminshowprofile.html', cmsg=cmsg, adminshowprofile=data)
+
+            elif not state:
+                lmsg = "blank  not allowed"
+                return render_template('adminshowprofile.html', smsg=lmsg, adminshowprofile=data)
+
+            elif not re.match(r'[a-zA-Z ]+',state):
+                msg = 'only characters allowed'
+                return render_template('adminshowprofile.html', smsg=msg, adminshowprofile=data)
+
+            elif not zipcode:
+                lmsg = "blank  not allowed"
+                return render_template('adminshowprofile.html', zmsg=lmsg, adminshowprofile=data)
+
+            elif not re.match(r'[0-9]{6}', zipcode):
+                msg = "only 6 digits allowed"
+                return render_template('adminshowprofile.html', zmsg=msg, adminshowprofile=data)
+
+            else:
+
+                cur = mysql.connection.cursor()
+                cur.execute("update User_profile set first_name=%s, last_name=%s, date_of_birth=%s,mobile_number=%s,gender=%s,address=%s,city=%s,state=%s,zipcode=%s,profile_updated_dt=curdate() where user_id=%s",(fname,lname,dob,mno,gender,address,city,state,zipcode,id))
+
+                mysql.connection.commit()
+                cur.close() 
+                flash("user profile have successfull update ")
+                return redirect('/showuser')
+        return render_template('adminupdateprofile.html')
+    else:
+        return redirect('adminlogin')
+    
 
 
 
@@ -422,6 +437,7 @@ def adminupdateuserprofil(id):
 # ================================== User login code ==========================================
 @app.route('/userlogin', methods = ['GET','POST'])
 def userlogin():
+
      if request.method == 'POST':
         uemail = request.form.get('useremail')
         upassword = request.form.get('userpassword')
@@ -608,7 +624,7 @@ def insertuserdata():
 
         else:
             
-            if file and allowed_file(file.filename) and  birth and allowed_pdf(birth.filename):
+            if file and allowed_file(file.filename) and  birth and allowed_pdf(birth.filename) and app.config['MAX_CONTENT_LENGTH'] == 3 * 1024 :
                 files = secure_filename(file.filename)  
                 births = secure_filename(birth.filename)
                 
@@ -722,7 +738,8 @@ def updateuserprofiledata():
             return render_template('userprofile.html', zmsg=msg, userprofile=data)
         
         else:
-            if file and allowed_file(file.filename) and  birth and allowed_pdf(birth.filename):
+            
+            if file and allowed_file(file.filename)  and  birth and allowed_pdf(birth.filename) :
                 files = secure_filename(file.filename)
                 births = secure_filename(birth.filename)
                

@@ -11,14 +11,15 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jqBootstrapValidation/1.3.6/jqBootstrapValidation.js"></script>
     
         <link rel="stylesheet" href="/static/style.css">
+        <script type="text/javascript" src="/static/Validation.js"></script>
     <title>user Profile</title>
 </head>
 <body class="section">
 
     <div class="row">
-        <div class="col-md-4 offset-md-4">
+        <div class="col-md-4 offset-md-4"> 
             <div class="card card-body">
-                <form  action="/updateuserprofiledata" id="login" method="POST" novalidate="novalidate" enctype="multipart/form-data">
+                <form  action="/updateuserprofiledata" onsubmit="return(filesize());" id="login" method="POST" novalidate="novalidate" enctype="multipart/form-data" >
                     
                     <div class="control-group">
                         <label>Email</label>
@@ -52,12 +53,12 @@
                     </div>
                     <div>
                         <label>Profile Picture</label>
-                        <input type="file" name="pic" value="{{userprofile.img}}" class="form-control" accept=".png, .jpg">
+                        <input type="file"  name="pic" id="pic" value="{{userprofile.img}}" class="form-control" accept=".png, .jpg" >
                         <p  id="velidesion">{{msgimg}}</p>
                     </div>
                     <div>
                         <label>Birth Certificate</label>
-                        <input type="file" name="birthCertificate" value="{{userprofile.birthpdf}}" class="form-control" accept=".pdf">
+                        <input type="file" name="birthCertificate" id="pdf" value="{{userprofile.birthpdf}}" class="form-control" accept=".pdf" >
                         <p  id="velidesion">{{pdf}}</p>
                     </div>
                    
@@ -144,6 +145,7 @@
             </div>
         </div>
     </div>
+  
     <script>
         $(document).ready(function () {
             $('#login input').jqBootstrapValidation({
