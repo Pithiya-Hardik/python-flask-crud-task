@@ -31,13 +31,15 @@
 
 //     if(profile.files[0].size >=1000000)
 //     {
-//         alert('please file size is big allow lessthen 1mb');
+//         document.getElementById('pic').innerHTML=" not Valide"
+// //         alert('please file size is big allow lessthen 1mb');
 //         return false;
         
 //     }
 //     else if(doc.files[0].size >= 3100000)
 //     {
-//         alert('please file size is big allow lessthen 3mb');
+//         document.getElementById('pdf').innerHTML="maxmimum 3 mb allowed"
+//         // alert('please file size is big allow lessthen 3mb');
 //         return false;
 //     } 
 // }
