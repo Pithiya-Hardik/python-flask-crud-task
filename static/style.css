@@ -430,7 +430,7 @@ p
     outline: none;
     border-radius: 30px;
     margin-top: 50px;
-    
+    margin-left: 50px;
     color: #fff;
 }
 
@@ -640,7 +640,7 @@ p
         border: none;
         margin-bottom: 30px;
         width: 100%;
-    }
+    } 
     .offset-md-4 {
         margin-left: 0;
     }

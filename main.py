@@ -24,7 +24,7 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 UPLOAD_FOLDER = 'static/birthpdf/'
 app.config['UPLOAD_FOLDER_PDF'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 3 * 1024 * 1024 
+# app.config['MAX_CONTENT_LENGTH'] = 3 * 1024 * 1024 
 
 UPLOAD_FOLDER = 'static/userprofilepic/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -155,11 +155,19 @@ def createuser():
 
             else:
 
-                cur.execute('SELECT * FROM User_login WHERE email = %s', [user_email])
-                data = cur.fetchall()
-                if data:
-                    flash('already exists')
-                    return redirect('/createuser')
+                if cur.execute('SELECT * FROM User_login WHERE email = %s', [user_email]) == 1:
+                    data = cur.fetchone()                
+                    useremail = data.get('email')                    
+                    if user_email == useremail:
+                        flash('user email already exists')
+                        return redirect('/createuser')
+
+                elif cur.execute('SELECT * FROM User_login WHERE user_name = %s', [user_name]) == 1:
+                    data = cur.fetchone()
+                    username = data.get("user_name")
+                    if username == user_name:
+                        flash('user name already exists ')
+                        return redirect('/createuser')
                 else:
                     sms = 'your User Name Is :'+ user_email +'\n\n'
                     sms2 = 'Your Password Is :' + user_password + '\n\n'
@@ -168,7 +176,6 @@ def createuser():
                     msg = Message('Hii Your User Name & Password', sender = 'pithiyahardik95@gmail.com', recipients = [user_email])
                     msg.body = sms4
                     mail.send(msg)
-
                     cur.execute("INSERT INTO User_login (email, user_name, password) VALUES (%s,%s,md5(%s))", (user_email, user_name, user_password))
                     mysql.connection.commit()
                     cur.close() 
@@ -250,12 +257,33 @@ def update(id):
                 usermassage = "min 3 max 20 char,not allow special characters " 
                 return render_template('update.html', user=data[0], umsg=usermassage)
 
+
             else:
                 cur = mysql.connection.cursor()
-                cur.execute("UPDATE User_login SET email = %s, user_name = %s WHERE Id = %s",(email, username, id) ) 
-                mysql.connection.commit()
-                flash("user update successfull !")
-                return redirect(url_for('showuser'))
+                if cur.execute('SELECT * FROM User_login WHERE email = %s', [email]) == 1:
+                    data = cur.fetchone()
+                    emailu = data.get('email')
+                
+                    if email == emailu:
+                        flash('user email already exists ')
+                        return redirect(url_for('get_employee',id=id))
+
+                    elif cur.execute('SELECT * FROM User_login WHERE user_name = %s', [username]) == 1:
+                        flash('user name and email already exists ')
+                        return redirect(url_for('get_employee',id=id))
+                    else:
+                        cur.execute("UPDATE User_login SET email = %s, user_name = %s WHERE Id = %s",(email, username, id) ) 
+                        mysql.connection.commit()
+                        flash("user update successfull !")
+                        return redirect(url_for('showuser'))                    
+                else:
+                   
+                    cur.execute("UPDATE User_login SET email = %s, user_name = %s WHERE Id = %s",(email, username, id) ) 
+                    mysql.connection.commit()
+                    flash("user update successfull !")
+                    return redirect(url_for('showuser'))
+                   
+                
     else:
         return redirect('adminlogin')
 
@@ -534,7 +562,7 @@ def checkuserprofile():
         return redirect('/insertuserdata')
     
 #==================================== user data insert ==================================================
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'pdf'])
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -624,7 +652,7 @@ def insertuserdata():
 
         else:
             
-            if file and allowed_file(file.filename) and  birth and allowed_pdf(birth.filename) and app.config['MAX_CONTENT_LENGTH'] == 3 * 1024 :
+            if file and allowed_file(file.filename) and  birth and allowed_pdf(birth.filename)  :
                 files = secure_filename(file.filename)  
                 births = secure_filename(birth.filename)
                 

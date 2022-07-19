@@ -1,157 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqBootstrapValidation/1.3.6/jqBootstrapValidation.js"></script>
-    
-        <link rel="stylesheet" href="/static/style.css">
-        <script type="text/javascript" src="/static/Validation.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqBootstrapValidation/1.3.6/jqBootstrapValidation.js"></script>
+
+    <link rel="stylesheet" href="/static/style.css">
+    <script type="text/javascript" src="/static/Validation.js"></script>
     <title>user Profile</title>
 </head>
+
 <body class="section">
 
     <div class="row">
-        <div class="col-md-4 offset-md-4"> 
+        <div class="col-md-4 offset-md-4">
             <div class="card card-body">
-                <form  action="/updateuserprofiledata" onsubmit="return(filesize());" id="login" method="POST" novalidate="novalidate" enctype="multipart/form-data" >
-                    
+                <form action="/updateuserprofiledata" onsubmit="return(filesize());" id="login" method="POST"
+                    novalidate="novalidate" enctype="multipart/form-data">
+
                     <div class="control-group">
                         <label>Email</label>
-                        <input type="text"  value="{{email}}" class="form-control" readonly>
-                        
+                        <input type="text" value="{{email}}" class="form-control" readonly>
+
                     </div>
                     <div class="control-group">
                         <label>User Name</label>
-                        <input type="text"  value="{{name}}" class="form-control" readonly>
-                        
+                        <input type="text" value="{{name}}" class="form-control" readonly>
+
                     </div>
-                    
+
                     <div class="control-group">
                         <label>First Name</label>
-                        <input type="text" name="firstname"  class="form-control" value="{{userprofile.first_name}}"
-                        minlength="3" maxlength="20"
-                        data-validation-regex-regex="[A-Z]+[a-zA-Z ]+" data-validation-regex-message="first latter Capital & only characters"
-                        required="required">
+                        <input type="text" name="firstname" class="form-control" value="{{userprofile.first_name}}"
+                            minlength="3" maxlength="20" data-validation-regex-regex="[A-Z]+[a-zA-Z ]+"
+                            data-validation-regex-message="first latter Capital & only characters" required="required">
                         <div class="msg" style="color: red;">{{ msg }}</div>
                         <p class="text-danger help-block" id="velidesion"></p>
                     </div>
 
                     <div class="control-group">
                         <label>Last Name</label>
-                        <input type="text" name="lastname"  class="form-control" value="{{userprofile.last_name}}"
-                        minlength="3" maxlength="20"
-                        data-validation-regex-regex="[A-Z]+[a-zA-Z ]+" data-validation-regex-message="first latter Capital & only characters"
-                        required="required">
+                        <input type="text" name="lastname" class="form-control" value="{{userprofile.last_name}}"
+                            minlength="3" maxlength="20" data-validation-regex-regex="[A-Z]+[a-zA-Z ]+"
+                            data-validation-regex-message="first latter Capital & only characters" required="required">
                         <div class="msg" style="color: red;">{{ lmsg }}</div>
                         <p class="text-danger help-block" id="velidesion"></p>
                     </div>
                     <div>
                         <label>Profile Picture</label>
-                        <input type="file"  name="pic" id="pic" value="{{userprofile.img}}" class="form-control" accept=".png, .jpg" >
-                        <p  id="velidesion">{{msgimg}}</p>
+                        <input type="file" name="pic" id="pic" value="{{userprofile.img}}" class="form-control"
+                            >
+                        <p id="velidesion">{{msgimg}}</p>
                     </div>
                     <div>
                         <label>Birth Certificate</label>
-                        <input type="file" name="birthCertificate" id="pdf" value="{{userprofile.birthpdf}}" class="form-control" accept=".pdf" >
-                        <p  id="velidesion">{{pdf}}</p>
+                        <input type="file" name="birthCertificate" id="pdf" value="{{userprofile.birthpdf}}"
+                            class="form-control">
+                        <p id="velidesion">{{pdf}}</p>
                     </div>
-                   
+
                     <div class=" control-group form-group">
                         <label>Date Of Birth</label>
-                        <input type="date" name="dob"  class="form-control" value="{{userprofile.date_of_birth}}" required="required" min="1985-01-01" max="2005-01-01" >
+                        <input type="date" name="dob" class="form-control" value="{{userprofile.date_of_birth}}"
+                            required="required" min="1985-01-01" max="2005-01-01">
                         <div class="msg" style="color: red;">{{ dmsg }}</div>
                         <p class="text-danger help-block" id="velidesion"></p>
                     </div>
 
                     <div class="control-group">
                         <label>Mobile Number</label>
-                        <input type="text" name="mno"  class="form-control"  value="{{userprofile.mobile_number}}"
-                        data-validation-regex-regex="[0-9]{10}" data-validation-regex-message="only 10 digits" 
-                        maxlength="10" required="required">
+                        <input type="text" name="mno" class="form-control" value="{{userprofile.mobile_number}}"
+                            data-validation-regex-regex="[0-9]{10}" data-validation-regex-message="only 10 digits"
+                            maxlength="10" required="required">
                         <div class="msg" style="color: red;">{{ nmsg }}</div>
                         <p class="text-danger help-block" id="velidesion"></p>
                     </div>
 
                     <div class=" control-group form-group">
                         <label>Choose a Gender</label>
-                        <select name="gender" id="gender" class="form-control" >
-                            <option value="{{userprofile.gender}}">{{userprofile.gender}}</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </select>
                        
-
-                    <div class=" control-group form-group">
-                        <label>Address</label>
-                        <input type="text" name="address"  class="form-control" value="{{userprofile.address}}" 
-                        minlength="3" maxlength="50" required="required">
-                        <div class="msg" style="color: red;">{{ amsg }}</div>
-                        <p class="text-danger help-block" id="velidesion"></p>  
-                    </div>
-
-                    <div class="control-group form-group">
-                        <label>City</label>
-                        <input type="text" name="city"  class="form-control" value="{{userprofile.city}}"
-                        minlength="3" maxlength="20"
-                        data-validation-regex-regex="[a-zA-Z ]+" data-validation-regex-message="only characters"
-                        required="required">
-                        <div class="msg" style="color: red;">{{ cmsg }}</div>
-                        <p class="text-danger help-block" id="velidesion"></p>
-                    </div>
-
-                    <div class="control-group form-group">
-                        <label>Choose a State</label>
-                        <select name="state" id="state" class="form-control" >
-                            <option value="{{userprofile.state}}">{{userprofile.state}}</option>
-                            <option value="Gujarat">Gujarat</option>
-                            <option value="Maharashtra">Maharashtra</option>
-                            <option value="Goa">Goa</option>
-                            <option value="Punjab">Punjab</option>
-                            <option value="Andhra Pradesh">Andhra Pradesh</option>
-                            <option value="Delhi">Delhi</option>
-                            <option value="Meghalaya">Meghalaya</option>
-                            <option value="Odisha">Odisha</option>
-                            <option value="Uttarakhand">Uttarakhand</option>
-                            <option value="Rajasthan">Rajasthan</option>
+                        <div class="form-control">
+                            Male <input type="radio"  name="gender" value="male" class="form-group" id="male">
+                            Female <input type="radio"  name="gender" value="female" class="form-group" id="female">
+                        </div>
                         </select>
-                        
-                    </div>
-                    
-                    <div class="control-group">
-                        <label>Zip Code</label>
-                        <input type="text" name="zipcode"  class="form-control"  value="{{userprofile.zipcode}}"
-                        data-validation-regex-regex="[0-9]{6}" data-validation-regex-message="only 6 digits" 
-                        maxlength="6" required="required">
-                        <div class="msg" style="color: red;">{{ zmsg }}</div>
-                        <p class="text-danger help-block" id="velidesion"></p>
-                    </div>
-                    
-                    
-                   
-                    <div class="form-footer">
-                       
-                        <button type="submit" class="btn btn-primary btn-block" id="gobackbutton">Edit</button>
-                        <a href="/userdashboard" class="btn btn-primary  btn-sm" id="gobackbutton">Go Back</a>
 
-                    </div> 
+
+                        <div class=" control-group form-group">
+                            <label>Address</label>
+                            <input type="text" name="address" class="form-control" value="{{userprofile.address}}"
+                                minlength="3" maxlength="50" required="required">
+                            <div class="msg" style="color: red;">{{ amsg }}</div>
+                            <p class="text-danger help-block" id="velidesion"></p>
+                        </div>
+
+                        <div class="control-group form-group">
+                            <label>City</label>
+                            <input type="text" name="city" class="form-control" value="{{userprofile.city}}"
+                                minlength="3" maxlength="20" data-validation-regex-regex="[a-zA-Z ]+"
+                                data-validation-regex-message="only characters" required="required">
+                            <div class="msg" style="color: red;">{{ cmsg }}</div>
+                            <p class="text-danger help-block" id="velidesion"></p>
+                        </div>
+
+                        <div class="control-group form-group">
+                            <label>Choose a State</label>
+                            <select name="state" id="state" class="form-control">
+                                <option value="{{userprofile.state}}">{{userprofile.state}}</option>
+                                <option value="Gujarat">Gujarat</option>
+                                <option value="Maharashtra">Maharashtra</option>
+                                <option value="Goa">Goa</option>
+                                <option value="Punjab">Punjab</option>
+                                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                <option value="Delhi">Delhi</option>
+                                <option value="Meghalaya">Meghalaya</option>
+                                <option value="Odisha">Odisha</option>
+                                <option value="Uttarakhand">Uttarakhand</option>
+                                <option value="Rajasthan">Rajasthan</option>
+                            </select>
+
+                        </div>
+
+                        <div class="control-group">
+                            <label>Zip Code</label>
+                            <input type="text" name="zipcode" class="form-control" value="{{userprofile.zipcode}}"
+                                data-validation-regex-regex="[0-9]{6}" data-validation-regex-message="only 6 digits"
+                                maxlength="6" required="required">
+                            <div class="msg" style="color: red;">{{ zmsg }}</div>
+                            <p class="text-danger help-block" id="velidesion"></p>
+                        </div>
+
+
+
+                        <div class="form-footer">
+
+                            <button type="submit" class="btn btn-primary btn-block" id="gobackbutton">Edit</button>
+                            <a href="/userdashboard" class="btn btn-primary  btn-sm" id="gobackbutton">Go Back</a>
+
+                        </div>
 
                 </form>
             </div>
         </div>
     </div>
-  
-    <script>
+
+    <script type="text/javascript">
         $(document).ready(function () {
             $('#login input').jqBootstrapValidation({
                 preventSubmit: true,
             });
+
+            value = "{{userprofile.gender}}"
+            const selectedValue = value;
+            const input = document.querySelector(`input[name="gender"][value="${selectedValue}"`);
+            if(input) input.checked = true;
         });
+    
     </script>
+  
 </body>
+
 </html>

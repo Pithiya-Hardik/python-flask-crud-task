@@ -50,12 +50,12 @@
                     </div>
                     <div>
                         <label>Profile Picture</label>
-                        <input type="file" name="pic" class="form-control" accept=".jpg, .png" >
+                        <input type="file" name="pic" class="form-control"  >
                         <p  id="velidesion">{{file}}</p>
                     </div>
                     <div>
                         <label>Birth Certificate</label>
-                        <input type="file" name="birthCertificate" class="form-control" accept=".pdf">
+                        <input type="file" name="birthCertificate" class="form-control" >
                         <p  id="velidesion">{{pdf}}</p>
                     </div>
 
@@ -78,10 +78,11 @@
 
                     <div class=" control-group form-group">
                         <label>Choose a Gender</label>
-                        <select name="gender" id="gender" class="form-control">
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </select>
+                       
+                        <div class="form-control">
+                            Male <input type="radio" name="gender" value="male" class="form-group" >
+                            Female <input type="radio" name="gender" value="female" class="form-group">
+                        </div>
                                                 
                     </div>
 
